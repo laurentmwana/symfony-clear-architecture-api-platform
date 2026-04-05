@@ -1,0 +1,33 @@
+<?php
+
+namespace App\IdentityAndAccess\Infrastructure\Framework\Security;
+
+use App\IdentityAndAccess\Domain\Entity\User;
+use App\IdentityAndAccess\Domain\Service\PasswordHasher;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
+use Symfony\Component\PasswordHasher\PasswordHasherInterface;
+
+final class SymfonyPasswordHasher implements PasswordHasher
+{
+   private PasswordHasherInterface $hasher;
+
+   public function __construct(PasswordHasherFactoryInterface $factory)
+   {
+      $this->hasher = $factory->getPasswordHasher(User::class);
+   }
+
+   public function hash(string $plainPassword): string
+   {
+      return $this->hasher->hash($plainPassword);
+   }
+
+   public function verify(string $hashedPassword, string $plainPassword): bool
+   {
+      return $this->hasher->verify($hashedPassword, $plainPassword);
+   }
+
+   public function needsRehash(string $hashedPassword): bool
+   {
+      return $this->hasher->needsRehash($hashedPassword);
+   }
+}
