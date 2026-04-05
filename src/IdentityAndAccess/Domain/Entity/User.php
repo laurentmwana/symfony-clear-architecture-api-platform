@@ -7,6 +7,7 @@ use App\SharedContext\Domain\ValueObject\Name;
 use App\SharedContext\Domain\ValueObject\Uuid;
 use App\IdentityAndAccess\Domain\ValueObject\Password;
 use App\IdentityAndAccess\Domain\ValueObject\Roles;
+use App\SharedContext\Domain\ValueObject\Phone;
 use DateTimeImmutable;
 
 final class User
@@ -14,6 +15,7 @@ final class User
    private readonly Uuid $id;
    private Name $name;
    private Email $email;
+   private Phone $phone;
    private Password $password;
    private readonly Roles $roles;
    private readonly DateTimeImmutable $createdAt;
@@ -24,6 +26,7 @@ final class User
       Uuid $id,
       Name $name,
       Email $email,
+      Phone $phone,
       Password $password,
       ?Roles $roles = null,
       ?DateTimeImmutable $createdAt = null,
@@ -33,6 +36,7 @@ final class User
       $this->name = $name;
       $this->email = $email;
       $this->password = $password;
+      $this->phone = $phone;
       $this->roles = $roles ?? Roles::default();
       $this->createdAt = $createdAt ?? new DateTimeImmutable();
       $this->updatedAt = $updatedAt ?? new DateTimeImmutable();
@@ -42,6 +46,7 @@ final class User
       Uuid $id,
       Name $name,
       Email $email,
+      Phone $phone,
       Password $password,
       ?Roles $roles = null
    ): self {
@@ -49,6 +54,7 @@ final class User
          $id,
          $name,
          $email,
+         $phone,
          $password,
          $roles ?? Roles::default()
       );
@@ -90,6 +96,11 @@ final class User
    public function email(): Email
    {
       return $this->email;
+   }
+
+   public function phone(): Phone
+   {
+      return $this->phone;
    }
 
    public function password(): Password
