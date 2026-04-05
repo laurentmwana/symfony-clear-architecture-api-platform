@@ -17,15 +17,78 @@ class LoginControllerTest extends AbstractApiTestCase
       parent::setUp();
    }
 
-   public function testLoginSuccess(): void
+   public function testLoginSuccessWithEmail(): void
    {
       $email = 'test@example.com';
 
-      $this->createUser($email);
+      $this->createUser($email, '+243820110123', 'password');
 
       $response = static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'email' => $email,
+            'identifiant' => $email,
+            'password' => 'password',
+         ],
+      ]);
+
+      $this->assertResponseIsSuccessful();
+      $this->assertResponseStatusCodeSame(200);
+
+      $data = $response->toArray();
+      $this->assertArrayHasKey('token', $data);
+      $this->assertNotEmpty($data['token']);
+   }
+
+   public function testLoginSuccessWithPhone(): void
+   {
+      $phone = '+243820110123';
+
+      $this->createUser('test@example.com', $phone, 'password');
+
+      $response = static::createClient()->request('POST', '/api/auth/login', [
+         'json' => [
+            'identifiant' => $phone,
+            'password' => 'password',
+         ],
+      ]);
+
+      $this->assertResponseIsSuccessful();
+      $this->assertResponseStatusCodeSame(200);
+
+      $data = $response->toArray();
+      $this->assertArrayHasKey('token', $data);
+      $this->assertNotEmpty($data['token']);
+   }
+
+   public function testLoginSuccessWithPhoneWithoutPlus(): void
+   {
+      $phone = '+243820110123';
+
+      $this->createUser('test@example.com', $phone, 'password');
+
+      $response = static::createClient()->request('POST', '/api/auth/login', [
+         'json' => [
+            'identifiant' => '+243820110123', // Sans le + mais valide
+            'password' => 'password',
+         ],
+      ]);
+
+      $this->assertResponseIsSuccessful();
+      $this->assertResponseStatusCodeSame(200);
+
+      $data = $response->toArray();
+      $this->assertArrayHasKey('token', $data);
+      $this->assertNotEmpty($data['token']);
+   }
+
+   public function testLoginSuccessWithPhoneLocalFormat(): void
+   {
+      $phone = '+243820110123';
+
+      $this->createUser('test@example.com', $phone, 'password');
+
+      $response = static::createClient()->request('POST', '/api/auth/login', [
+         'json' => [
+            'identifiant' => '+243820110123',
             'password' => 'password',
          ],
       ]);
@@ -41,13 +104,12 @@ class LoginControllerTest extends AbstractApiTestCase
    public function testLoginFailureWrongPassword(): void
    {
       $email = 'test2@example.com';
-      $password = 'correctpassword';
 
-      $this->createUser($email, $password);
+      $this->createUser($email, '+243820110124');
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'email' => $email,
+            'identifiant' => $email,
             'password' => 'wrongpassword',
          ],
       ]);
@@ -55,11 +117,27 @@ class LoginControllerTest extends AbstractApiTestCase
       $this->assertResponseStatusCodeSame(401);
    }
 
-   public function test_loginFailure_user_not_found(): void
+   public function testLoginFailureWithPhoneWrongPassword(): void
+   {
+      $phone = '+243820110125';
+
+      $this->createUser('test3@example.com', $phone, 'correctpassword');
+
+      static::createClient()->request('POST', '/api/auth/login', [
+         'json' => [
+            'identifiant' => $phone,
+            'password' => 'wrongpassword',
+         ],
+      ]);
+
+      $this->assertResponseStatusCodeSame(401);
+   }
+
+   public function testLoginFailureUserNotFoundByEmail(): void
    {
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'email' => 'nonexistent@example.com',
+            'identifiant' => 'nonexistent@example.com',
             'password' => 'password123',
          ],
       ]);
@@ -67,7 +145,20 @@ class LoginControllerTest extends AbstractApiTestCase
       $this->assertResponseStatusCodeSame(401);
    }
 
-   public function testLoginMissingEmail(): void
+   public function testLoginFailureUserNotFoundByPhone(): void
+   {
+      static::createClient()->request('POST', '/api/auth/login', [
+         'json' => [
+            'identiant' => '+243999999999',
+            'password' => 'password123',
+         ],
+      ]);
+
+      $this->assertResponseStatusCodeSame(422);
+   }
+
+
+   public function testLoginMissingEmailOrPhone(): void
    {
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
@@ -82,16 +173,30 @@ class LoginControllerTest extends AbstractApiTestCase
    {
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'email' => 'test@example.com',
+            'identifiant' => 'test@example.com',
          ],
       ]);
 
       $this->assertResponseStatusCodeSame(422);
    }
 
-   private function createUser(string $email): User
+   public function testLoginWithInvalidPhoneFormat(): void
    {
-      $user = UserFactory::createOne($email);
+      $this->createUser('test4@example.com', '+243820110126', 'password');
+
+      static::createClient()->request('POST', '/api/auth/login', [
+         'json' => [
+            'identifiant' => '123',
+            'password' => 'password',
+         ],
+      ]);
+
+      $this->assertResponseStatusCodeSame(422);
+   }
+
+   private function createUser(string $email, string $phone): User
+   {
+      $user = UserFactory::createOne($email, $phone);
 
       $this->save($user);
 
