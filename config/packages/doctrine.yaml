@@ -5,6 +5,12 @@ doctrine:
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '16'
+        types:
+            uuid_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\UuidType
+            email_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\EmailType
+            name_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\NameType
+            password_type: App\IdentityAndAccess\Infrastructure\Persistance\Doctrine\Dbal\Types\PasswordType
+            roles_type: App\IdentityAndAccess\Infrastructure\Persistance\Doctrine\Dbal\Types\RolesType
 
         profiling_collect_backtrace: "%kernel.debug%"
     orm:
@@ -19,6 +25,12 @@ doctrine:
                 is_bundle: false
                 dir: "%kernel.project_dir%/config/doctrine/SharedContext"
                 prefix: 'App\SharedContext\Domain'
+
+            App\IdentityAndAccess:
+                type: xml
+                is_bundle: false
+                dir: "%kernel.project_dir%/config/doctrine/IdentityAndAccess"
+                prefix: 'App\IdentityAndAccess\Domain'
 
 when@test:
     doctrine:
