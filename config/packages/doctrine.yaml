@@ -8,6 +8,7 @@ doctrine:
         types:
             uuid_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\UuidType
             email_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\EmailType
+            phone_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\PhoneType
             name_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\NameType
             password_type: App\IdentityAndAccess\Infrastructure\Persistance\Doctrine\Dbal\Types\PasswordType
             roles_type: App\IdentityAndAccess\Infrastructure\Persistance\Doctrine\Dbal\Types\RolesType
