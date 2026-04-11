@@ -10,14 +10,13 @@ final class LoginCommand
 {
    public function __construct(private Email|Phone $identifiant, private Password $password) {}
 
-   public function getPassword()
-   {
-      return $this->password;
-   }
-
-
-   public function getIdentifiant()
+   public function getIdentifiant(): Email|Phone
    {
       return $this->identifiant;
+   }
+
+   public function getPassword(): Password
+   {
+      return $this->password;
    }
 }

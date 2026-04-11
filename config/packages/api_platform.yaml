@@ -1,7 +1,26 @@
 api_platform:
-    title: Hello API Platform
+    title: Backend Locmobile API Platform
     version: 1.0.0
     defaults:
         stateless: true
         cache_headers:
-            vary: ['Content-Type', 'Authorization', 'Origin']
+            vary: ["Content-Type", "Authorization", "Origin"]
+        extra_properties:
+            standard_put: true
+            rfc_7807_compliant_errors: true
+    formats:
+        json: ["application/json"]
+        jsonld: ["application/ld+json"]
+    error_formats:
+        json: ["application/json"]
+        jsonproblem: ["application/problem+json"]
+    swagger:
+        api_keys:
+            JWT:
+                name: Authorization
+                type: header
+    exception_to_status:
+        App\IdentityAndAccess\Domain\Exception\UserCredentialsException: 401
+        App\IdentityAndAccess\Domain\Exception\InvalidIdentifierException: 422
+        App\IdentityAndAccess\Domain\Exception\UserNotFoundException: 404
+    enable_re_doc: false

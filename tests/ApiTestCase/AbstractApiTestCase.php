@@ -36,6 +36,14 @@ abstract class AbstractApiTestCase extends ApiTestCase
       return static::createClient([], ['headers' => ['authorization' => 'Bearer ' . $token]]);
    }
 
+   protected function getHeadersJson()
+   {
+      return [
+         'Accept' => 'application/json',
+         'Content-Type' => 'application/json'
+      ];
+   }
+
    protected function getToken($body = []): string
    {
       if ($this->token) {

@@ -1,13 +1,15 @@
 <?php
 
-namespace App\IdentityAndAccess\Application\Handler;
+namespace App\IdentityAndAccess\Application\CommandHandler;
 
 use App\IdentityAndAccess\Application\Command\LoginCommand;
+use App\IdentityAndAccess\Domain\Exception\UserCredentialsException;
 use App\IdentityAndAccess\Domain\Repository\UserRepository;
 use App\IdentityAndAccess\Domain\Service\JwtTokenGenerator;
 use App\IdentityAndAccess\Domain\Service\PasswordHasher;
+use App\SharedContext\Application\Bus\Command\CommandHandlerBus;
 
-class LoginHandler
+final class LoginHandler implements CommandHandlerBus
 {
    public function __construct(
       private UserRepository $repository,
@@ -15,17 +17,17 @@ class LoginHandler
       private JwtTokenGenerator $jwt
    ) {}
 
-   public function handle(LoginCommand $command)
+   public function __invoke(LoginCommand $command): string
    {
       $user = $this->repository->findByEmailOrPhone($command->getIdentifiant());
-      if (!$user || !$this->isMatch($command->getPassword(), $user->password())) {
-         return null;
+      if (!$user || !$this->isMatch($user->password(), $command->getPassword())) {
+         throw new UserCredentialsException();
       }
 
       return $this->jwt->generate($user);
    }
 
-   private function isMatch(string $plainPassword, string $hashPassword)
+   private function isMatch(string $hashPassword, string $plainPassword)
    {
       return $this->hasher->verify($hashPassword, $plainPassword);
    }

@@ -53,7 +53,7 @@ class UserFactory extends Fixture
       $name = new Name($faker->name());
       $email = new Email($email ?? $faker->email());
       $phone = new Phone($phone ?? self::generateCongolesePhoneNumber());
-      $password = Password::fromHash(self::PASSWORD_DEFAULT);
+      $password = Password::fromPlainUnhashed(self::PASSWORD_DEFAULT);
       $uuid = new Uuid($faker->uuid());
 
       return User::create($uuid, $name, $email, $phone, $password);

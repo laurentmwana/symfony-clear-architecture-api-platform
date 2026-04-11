@@ -4,50 +4,38 @@ namespace App\IdentityAndAccess\Presentation\Input;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class LoginInput
+final class LoginInput
 {
-   #[Assert\NotBlank]
-   public ?string $identifiant = null;
+   #[Assert\NotBlank()]
+   #[Assert\AtLeastOneOf([
+      new Assert\Email(),
+      new Assert\Regex('/^\+?[0-9]{9,15}$/'),
+   ])]
+   private ?string $identifiant = null;
 
    #[Assert\NotBlank()]
-   public ?string $password = null;
+   private ?string $password = null;
 
-   /**
-    * Get the value of password
-    */
-   public function getPassword()
-   {
-      return $this->password;
-   }
-
-   /**
-    * Set the value of password
-    *
-    * @return  self
-    */
-   public function setPassword($password)
-   {
-      $this->password = $password;
-
-      return $this;
-   }
-
-   /**
-    * Get the value of identifiant
-    */
    public function getIdentifiant()
    {
       return $this->identifiant;
    }
 
-   /**
-    * Set the value of identifiant
-    *
-    * @return  self
-    */
    public function setIdentifiant($identifiant)
    {
       $this->identifiant = $identifiant;
+
+      return $this;
+   }
+
+   public function getPassword()
+   {
+      return $this->password;
+   }
+
+   public function setPassword($password)
+   {
+      $this->password = $password;
 
       return $this;
    }

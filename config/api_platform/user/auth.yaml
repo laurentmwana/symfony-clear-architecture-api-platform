@@ -1,0 +1,83 @@
+resources:
+    App\IdentityAndAccess\Domain\Entity\User:
+        operations:
+            ApiPlatform\Metadata\Post:
+                name: auth_login
+                uriTemplate: /auth/login
+                input: App\IdentityAndAccess\Presentation\Input\LoginInput
+                output: App\IdentityAndAccess\Presentation\Output\TokenOutput
+                processor: App\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor\LoginProcessor
+                read: false
+                status: 200
+                openapi:
+                    summary: User authentication
+                    description: Authenticate user with email or phone number and password
+                    requestBody:
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        identifiant:
+                                            type: string
+                                            description: Email address or phone number for DRC
+                                            example: "user@example.com"
+                                        password:
+                                            type: string
+                                            format: password
+                                            example: "SecurePass123!"
+                                    required: [identifiant, password]
+                    responses:
+                        200:
+                            description: Authentication successful
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            token:
+                                                type: string
+                                                description: JWT access token
+                                                example: "string"
+                        400:
+                            description: Bad request - Validation error
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: "Validation failed"
+                                            errors:
+                                                type: object
+                                                properties:
+                                                    identifiant:
+                                                        type: array
+                                                        items:
+                                                            type: string
+                                                        example:
+                                                            [
+                                                                "This value should not be blank.",
+                                                            ]
+                                                    password:
+                                                        type: array
+                                                        items:
+                                                            type: string
+                                                        example:
+                                                            [
+                                                                "This value should not be blank.",
+                                                            ]
+                        401:
+                            description: Invalid credentials
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            code:
+                                                type: integer
+                                                example: 401
+                                            message:
+                                                type: string
+                                                example: "Invalid identifiant or password"

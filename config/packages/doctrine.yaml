@@ -11,6 +11,7 @@ doctrine:
             phone_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\PhoneType
             name_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\NameType
             password_type: App\IdentityAndAccess\Infrastructure\Persistance\Doctrine\Dbal\Types\PasswordType
+            otp_password_type: App\OneTimePassword\Infrastructure\Persistance\Doctrine\Dbal\Types\OtpPasswordType
             roles_type: App\IdentityAndAccess\Infrastructure\Persistance\Doctrine\Dbal\Types\RolesType
 
         profiling_collect_backtrace: "%kernel.debug%"
@@ -32,6 +33,12 @@ doctrine:
                 is_bundle: false
                 dir: "%kernel.project_dir%/config/doctrine/IdentityAndAccess"
                 prefix: 'App\IdentityAndAccess\Domain'
+
+            App\OneTimePassword:
+                type: xml
+                is_bundle: false
+                dir: "%kernel.project_dir%/config/doctrine/OneTimePassword"
+                prefix: 'App\OneTimePassword\Domain'
 
 when@test:
     doctrine:
