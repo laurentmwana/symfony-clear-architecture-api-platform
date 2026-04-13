@@ -2,10 +2,12 @@ resources:
     App\IdentityAndAccess\Domain\Entity\User:
         operations:
             ApiPlatform\Metadata\Post:
+                shortName: IdentityAndAccess
+                description: Auth User
                 name: auth_login
                 uriTemplate: /auth/login
                 input: App\IdentityAndAccess\Presentation\Input\LoginInput
-                output: App\IdentityAndAccess\Presentation\Output\TokenOutput
+                output: App\IdentityAndAccess\Presentation\Output\JwtTokenOutput
                 processor: App\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor\LoginProcessor
                 read: false
                 status: 200
@@ -75,9 +77,6 @@ resources:
                                     schema:
                                         type: object
                                         properties:
-                                            code:
-                                                type: integer
-                                                example: 401
                                             message:
                                                 type: string
-                                                example: "Invalid identifiant or password"
+                                                example: "string"

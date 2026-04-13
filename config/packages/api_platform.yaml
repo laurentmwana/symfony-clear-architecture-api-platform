@@ -20,7 +20,6 @@ api_platform:
                 name: Authorization
                 type: header
     exception_to_status:
-        App\IdentityAndAccess\Domain\Exception\UserCredentialsException: 401
+        App\IdentityAndAccess\Domain\Exception\AuthenticationException: 401
         App\IdentityAndAccess\Domain\Exception\InvalidIdentifierException: 422
         App\IdentityAndAccess\Domain\Exception\UserNotFoundException: 404
-    enable_re_doc: false

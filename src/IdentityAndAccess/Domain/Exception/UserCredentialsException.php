@@ -2,14 +2,10 @@
 
 namespace App\IdentityAndAccess\Domain\Exception;
 
-use Exception;
-
-class UserCredentialsException extends Exception
+class UserCredentialsException extends AuthenticationException
 {
-   public function __construct(string $message = '')
+   public function __construct(string $message = 'Invalid credentials. Please check your identifier and password.')
    {
-      $message = $message ?? 'Invalid credentials. Please check your identifier and password.';
-
       parent::__construct($message);
    }
 }

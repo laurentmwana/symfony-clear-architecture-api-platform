@@ -8,7 +8,7 @@ use App\IdentityAndAccess\Application\Command\LoginCommand;
 use App\IdentityAndAccess\Domain\Exception\InvalidIdentifierException;
 use App\IdentityAndAccess\Domain\ValueObject\Password;
 use App\IdentityAndAccess\Presentation\Input\LoginInput;
-use App\IdentityAndAccess\Presentation\Output\TokenOutput;
+use App\IdentityAndAccess\Presentation\Output\JwtTokenOutput;
 use App\SharedContext\Application\Bus\BusDispatcher;
 use App\SharedContext\Domain\ValueObject\Email;
 use App\SharedContext\Domain\ValueObject\Phone;
@@ -32,7 +32,7 @@ class LoginProcessor implements ProcessorInterface
 
       $token = $this->bus->dispatch($command);
 
-      return new TokenOutput($token);
+      return new JwtTokenOutput($token);
    }
 
    private function getIdentifiant(string $identifiant): Email|Phone

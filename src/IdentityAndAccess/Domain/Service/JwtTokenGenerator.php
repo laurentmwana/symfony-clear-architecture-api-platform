@@ -6,5 +6,5 @@ use App\IdentityAndAccess\Domain\Entity\User;
 
 interface JwtTokenGenerator
 {
-  public function generate(User $user): string;
+   public function generate(User $user): string;
 }

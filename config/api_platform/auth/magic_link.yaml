@@ -1,0 +1,53 @@
+resources:
+    App\IdentityAndAccess\Domain\Entity\User:
+        operations:
+            auth_magic_link:
+                class: ApiPlatform\Metadata\Post
+                shortName: IdentityAndAccess
+                description: Send magic link to authenticate user
+                name: auth_magic_link
+                uriTemplate: /auth/magic-link
+                input: App\IdentityAndAccess\Presentation\Input\MagicLinkInput
+                output: App\IdentityAndAccess\Presentation\Output\MagicLinkOutput
+                processor: App\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor\MagicLinkProcessor
+                read: false
+                status: 200
+                openapi:
+                    summary: Send magic link
+                    description: Send a magic authentication link to the user's email
+                    responses:
+                        "200":
+                            description: Magic link sent successfully
+                        "400":
+                            description: Bad request - Validation error
+                        "404":
+                            description: User not found
+
+            auth_magic_link_verify:
+                class: ApiPlatform\Metadata\Post
+                shortName: IdentityAndAccess
+                description: Verify magic link and authenticate user
+                name: auth_magic_link_verify
+                uriTemplate: /auth/magic-link/verify
+                input: App\IdentityAndAccess\Presentation\Input\VerifyMagicLinkInput
+                output: App\IdentityAndAccess\Presentation\Output\JwtTokenOutput
+                processor: App\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor\VerifyMagicLinkProcessor
+                read: false
+                status: 200
+                openapi:
+                    summary: Verify magic link
+                    description: Verify magic link token and return JWT token
+                    responses:
+                        "200":
+                            description: Successfully authenticated
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            token:
+                                                type: string
+                        "400":
+                            description: Invalid request
+                        "401":
+                            description: Invalid or expired token

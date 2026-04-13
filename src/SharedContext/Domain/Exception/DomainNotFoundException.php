@@ -2,6 +2,6 @@
 
 namespace App\SharedContext\Domain\Exception;
 
-use Exception;
+use DomainException;
 
-class DomainNotFoundException extends Exception {}
+class DomainNotFoundException extends DomainException {}
