@@ -8,16 +8,16 @@ use App\IdentityAndAccess\Application\Command\SendMagicLinkCommand;
 use App\IdentityAndAccess\Presentation\Input\MagicLinkInput;
 use App\IdentityAndAccess\Presentation\Output\MagicLinkOutput;
 use App\SharedContext\Application\Bus\BusDispatcher;
+use App\SharedContext\Domain\Service\RateLimiter;
 use App\SharedContext\Domain\ValueObject\Email;
 use App\SharedContext\Domain\ValueObject\IpAddress;
 use App\SharedContext\Domain\ValueObject\UserAgent;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class MagicLinkProcessor implements ProcessorInterface
 {
    public function __construct(
       private BusDispatcher $bus,
-      private RequestStack $request,
+      private RateLimiter $rateLimiter
    ) {}
 
    public function process(
@@ -26,11 +26,15 @@ class MagicLinkProcessor implements ProcessorInterface
       array $uriVariables = [],
       array $context = []
    ): MagicLinkOutput {
+
+      /** @var \Symfony\Component\HttpFoundation\Request */
+      $request = $context['request'] ?? null;
+
+      $this->rateLimiter->throttle($request->getClientIp());
+
       if (!$data instanceof MagicLinkInput) {
          throw new \InvalidArgumentException('Expected MagicLinkInput.');
       }
-
-      $request = $this->request->getCurrentRequest();
 
       $command = new SendMagicLinkCommand(
          new Email($data->getEmail()),

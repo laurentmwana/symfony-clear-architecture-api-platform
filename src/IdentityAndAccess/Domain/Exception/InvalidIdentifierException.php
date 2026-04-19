@@ -2,7 +2,7 @@
 
 namespace App\IdentityAndAccess\Domain\Exception;
 
-class InvalidIdentifierException extends \InvalidArgumentException
+class InvalidIdentifierException extends AuthenticationException
 {
    public function __construct(string $identifier)
    {

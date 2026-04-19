@@ -20,7 +20,7 @@ final class LoginHandler implements CommandHandlerBus
    public function __invoke(LoginCommand $command): string
    {
       $user = $this->repository->findByEmailOrPhone($command->getIdentifiant());
-      if (!$user || !$this->isMatch($user->password(), $command->getPassword())) {
+      if (!$user || !$this->isMatch($user->getPassword(), $command->getPassword())) {
          throw new UserCredentialsException();
       }
 

@@ -10,12 +10,12 @@ class MagicLinkInput
    #[Assert\Email()]
    private ?string $email = null;
 
-   public function getEmail()
+   public function getEmail(): ?string
    {
       return $this->email;
    }
 
-   public function setEmail($email)
+   public function setEmail(?string $email): static
    {
       $this->email = $email;
 

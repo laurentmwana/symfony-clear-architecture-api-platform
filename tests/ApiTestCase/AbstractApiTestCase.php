@@ -4,6 +4,8 @@ namespace App\Tests\ApiTestCase;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
+use App\IdentityAndAccess\Domain\Entity\User;
+use App\IdentityAndAccess\Infrastructure\Persistance\Fixtures\UserFixtures;
 use Doctrine\ORM\EntityManagerInterface;
 
 abstract class AbstractApiTestCase extends ApiTestCase
@@ -28,7 +30,6 @@ abstract class AbstractApiTestCase extends ApiTestCase
       return $this->entityManager;
    }
 
-
    protected function createClientWithCredentials($token = null): Client
    {
       $token = $token ?: $this->getToken();
@@ -36,11 +37,18 @@ abstract class AbstractApiTestCase extends ApiTestCase
       return static::createClient([], ['headers' => ['authorization' => 'Bearer ' . $token]]);
    }
 
-   protected function getHeadersJson()
+   protected function getHeadersContentJson()
    {
       return [
-         'Accept' => 'application/json',
+         'accept' => 'application/json',
          'Content-Type' => 'application/json'
+      ];
+   }
+
+   protected function getHeadersAccept()
+   {
+      return [
+         'accept' => 'application/json',
       ];
    }
 
@@ -60,6 +68,19 @@ abstract class AbstractApiTestCase extends ApiTestCase
       $this->token = $data['token'];
 
       return $data['token'];
+   }
+
+   protected function clearRateLimitCache(): void
+   {
+      $cachePool = static::getContainer()->get('cache.rate_limiter');
+      $cachePool->clear();
+   }
+
+   public function createUser(?string $email = null, ?string $phone = null): User
+   {
+      $user = UserFixtures::createOne($email, $phone);
+      $this->save($user);
+      return $user;
    }
 
    public function save(object $object): object

@@ -1,9 +1,7 @@
 <?php
 
-namespace App\Tests\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor;
+namespace App\Tests\ApiTestCase\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor;
 
-use App\IdentityAndAccess\Domain\Entity\User;
-use App\IdentityAndAccess\Infrastructure\Persistance\Factories\UserFactory;
 use App\Tests\ApiTestCase\AbstractApiTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
@@ -11,6 +9,8 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 class LoginProcessorTest extends AbstractApiTestCase
 {
    use ResetDatabase, Factories;
+
+   private const DEFAULT_PASSWORD = 'password';
 
    protected function setUp(): void
    {
@@ -26,9 +26,9 @@ class LoginProcessorTest extends AbstractApiTestCase
       $response = static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
             'identifiant' => $email,
-            'password' => 'password',
+            'password' => self::DEFAULT_PASSWORD,
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       $this->assertResponseIsSuccessful();
@@ -48,9 +48,9 @@ class LoginProcessorTest extends AbstractApiTestCase
       $response = static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
             'identifiant' => $phone,
-            'password' => 'password',
+            'password' => self::DEFAULT_PASSWORD,
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       $this->assertResponseIsSuccessful();
@@ -64,16 +64,15 @@ class LoginProcessorTest extends AbstractApiTestCase
    public function testLoginWithPhoneWithoutPlusShouldFail(): void
    {
       $phone = '+243820110123';
-      $plainPassword = 'password123456';
 
-      $this->createUser('test@example.com', $phone, $plainPassword);
+      $this->createUser('test@example.com', $phone);
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => '243820110123', // Missing +
-            'password' => $plainPassword,
+            'identifiant' => '243820110123',
+            'password' => self::DEFAULT_PASSWORD,
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       // Returns 422 because phone format requires +243 prefix
@@ -83,16 +82,15 @@ class LoginProcessorTest extends AbstractApiTestCase
    public function testLoginWithPhoneLocalFormatShouldFail(): void
    {
       $phone = '+243820110123';
-      $plainPassword = 'password123456';
 
-      $this->createUser('test@example.com', $phone, $plainPassword);
+      $this->createUser('test@example.com', $phone);
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => '0820110123', // Local format
-            'password' => $plainPassword,
+            'identifiant' => '0820110123',
+            'password' => self::DEFAULT_PASSWORD,
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       // Returns 422 because phone format requires +243 prefix
@@ -102,16 +100,15 @@ class LoginProcessorTest extends AbstractApiTestCase
    public function testLoginFailureWrongPassword(): void
    {
       $email = 'test2@example.com';
-      $plainPassword = 'password123456';
 
-      $this->createUser($email, '+243820110124', $plainPassword);
+      $this->createUser($email, '+243820110124');
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
             'identifiant' => $email,
             'password' => 'wrongpassword',
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       $this->assertResponseStatusCodeSame(401);
@@ -119,17 +116,14 @@ class LoginProcessorTest extends AbstractApiTestCase
 
    public function testLoginFailureWithPhoneWrongPassword(): void
    {
-      $phone = '+243820110125';
-      $plainPassword = 'correctpassword123';
-
-      $this->createUser('test3@example.com', $phone, $plainPassword);
+      $this->createUser('test3@example.com', '+243800110125');
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => $phone,
-            'password' => 'wrongpassword',
+            'identifiant' => '+243800110120',
+            'password' => self::DEFAULT_PASSWORD,
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       $this->assertResponseStatusCodeSame(401);
@@ -140,9 +134,9 @@ class LoginProcessorTest extends AbstractApiTestCase
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
             'identifiant' => 'nonexistent@example.com',
-            'password' => 'password123456',
+            'password' => self::DEFAULT_PASSWORD,
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       $this->assertResponseStatusCodeSame(401);
@@ -155,7 +149,7 @@ class LoginProcessorTest extends AbstractApiTestCase
             'identifiant' => '+243999999999',
             'password' => 'password123456',
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       $this->assertResponseStatusCodeSame(401);
@@ -167,7 +161,7 @@ class LoginProcessorTest extends AbstractApiTestCase
          'json' => [
             'password' => 'password123456',
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       $this->assertResponseStatusCodeSame(422);
@@ -179,7 +173,7 @@ class LoginProcessorTest extends AbstractApiTestCase
          'json' => [
             'identifiant' => 'test@example.com',
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       $this->assertResponseStatusCodeSame(422);
@@ -187,14 +181,14 @@ class LoginProcessorTest extends AbstractApiTestCase
 
    public function testLoginWithInvalidPhoneFormat(): void
    {
-      $this->createUser('test4@example.com', '+243820110126', 'password123456');
+      $this->createUser('test4@example.com', '+243820110126');
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => '123', // Invalid format
-            'password' => 'password123456',
+            'identifiant' => '123',
+            'password' => self::DEFAULT_PASSWORD,
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       $this->assertResponseStatusCodeSame(422);
@@ -206,10 +200,10 @@ class LoginProcessorTest extends AbstractApiTestCase
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => 'invalid-email', // Invalid email format
+            'identifiant' => 'invalid-email',
             'password' => 'password123456',
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
       $this->assertResponseStatusCodeSame(422);
@@ -221,21 +215,12 @@ class LoginProcessorTest extends AbstractApiTestCase
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => '+123456789012', // Wrong prefix
+            'identifiant' => '+123456789012',
             'password' => 'password123456',
          ],
-         'headers' => $this->getHeadersJson(),
+         'headers' => $this->getHeadersContentJson(),
       ]);
 
-      $this->assertResponseStatusCodeSame(422);
-   }
-
-   private function createUser(?string $email = null, ?string $phone = null): User
-   {
-      $user = UserFactory::createOne($email, $phone);
-
-      $this->save($user);
-
-      return $user;
+      $this->assertResponseStatusCodeSame(401);
    }
 }

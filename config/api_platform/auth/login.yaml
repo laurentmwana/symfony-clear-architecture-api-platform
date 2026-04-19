@@ -4,6 +4,7 @@ resources:
             ApiPlatform\Metadata\Post:
                 shortName: IdentityAndAccess
                 description: Auth User
+                raterLimit: login_rater_limiter
                 name: auth_login
                 uriTemplate: /auth/login
                 input: App\IdentityAndAccess\Presentation\Input\LoginInput

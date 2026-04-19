@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IdentityAndAccess\Infrastructure\Persistance\Factories;
+namespace App\IdentityAndAccess\Infrastructure\Persistance\Fixtures;
 
 use App\SharedContext\Domain\ValueObject\Email;
 use App\SharedContext\Domain\ValueObject\Name;
@@ -12,7 +12,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class UserFactory extends Fixture
+class UserFixtures extends Fixture
 {
    private const PASSWORD_DEFAULT = '$2y$13$crNg58xtI2iQwCnVqjmZS.5q4LI9/SGLfYu8hU.pme2/j2DemE6jW';
 

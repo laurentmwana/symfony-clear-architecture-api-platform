@@ -29,18 +29,14 @@ class SendMagicLinkHandler implements CommandHandlerBus
       private MagicLinkUrlGenerator $magicLinkUrl
    ) {}
 
-
-
-   public function __invoke(SendMagicLinkCommand $command): MagicLink
+   public function __invoke(SendMagicLinkCommand $command): void
    {
       $email = $command->getEmail();
 
       $user = $this->user->findByEmail($email);
 
       if (!$user) {
-         throw new UserCredentialsException(
-            sprintf('No account found for email "%s".', $email->value())
-         );
+         return;
       }
 
       $magicLink = $this->magicLink->findValidByEmail($email);
@@ -71,7 +67,5 @@ class SendMagicLinkHandler implements CommandHandlerBus
             ],
          )
       );
-
-      return $magicLink;
    }
 }

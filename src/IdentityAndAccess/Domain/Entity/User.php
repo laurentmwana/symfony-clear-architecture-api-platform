@@ -83,42 +83,42 @@ final class User
       $this->updatedAt = new \DateTimeImmutable();
    }
 
-   public function id(): Uuid
+   public function getId(): Uuid
    {
       return $this->id;
    }
 
-   public function name(): Name
+   public function getName(): Name
    {
       return $this->name;
    }
 
-   public function email(): Email
+   public function getEmail(): Email
    {
       return $this->email;
    }
 
-   public function phone(): Phone
+   public function getPhone(): Phone
    {
       return $this->phone;
    }
 
-   public function password(): Password
+   public function getPassword(): Password
    {
       return $this->password;
    }
 
-   public function roles(): Roles
+   public function getRoles(): Roles
    {
       return $this->roles;
    }
 
-   public function createdAt(): DateTimeImmutable
+   public function getCreatedAt(): DateTimeImmutable
    {
       return $this->createdAt;
    }
 
-   public function updatedAt(): ?DateTimeImmutable
+   public function getUpdatedAt(): ?DateTimeImmutable
    {
       return $this->updatedAt;
    }

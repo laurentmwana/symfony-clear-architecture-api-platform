@@ -37,5 +37,14 @@ services:
             - "../src/**/Domain/ValueObject/*"
             - "../src/SharedContext/Infrastructure/Framework/Kernel.php"
 
+    app.rate_limiter_locator:
+        class: Symfony\Component\DependencyInjection\ServiceLocator
+        arguments:
+            - default: "@limiter.default_rate_limiter"
+        tags: ["container.service_locator"]
+
+    App\SharedContext\Infrastructure\Framework\Services\SymfonyRateLimiter:
+        arguments:
+            $limiterLocator: "@app.rate_limiter_locator"
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

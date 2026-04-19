@@ -2,15 +2,13 @@
 
 namespace App\IdentityAndAccess\Presentation\Input;
 
+use App\IdentityAndAccess\Presentation\Contraints\PhoneOrEmail;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class LoginInput
 {
    #[Assert\NotBlank()]
-   #[Assert\AtLeastOneOf([
-      new Assert\Email(),
-      new Assert\Regex('/^\+?[0-9]{9,15}$/'),
-   ])]
+   #[PhoneOrEmail()]
    private ?string $identifiant = null;
 
    #[Assert\NotBlank()]
