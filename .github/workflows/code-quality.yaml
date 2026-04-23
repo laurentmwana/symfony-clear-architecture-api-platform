@@ -28,7 +28,7 @@ jobs:
               with:
                   path: ${{ env.COMPOSER_CACHE_DIR }}
                   key: php8.3-composer-${{ hashFiles('**/composer.lock') }}
-                  restore-keys: php8.3-composer-
+                  restore-keys: php8.4-composer-
 
             - name: Install deps
               run: make install
