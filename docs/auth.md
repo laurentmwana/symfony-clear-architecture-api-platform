@@ -2,16 +2,17 @@
 
 ## 2. **Endpoints de connexion (Login)**
 
-- `POST /auth/login` – email/mot de passe → retourne tokens (access + refresh) (primary)
-- `POST /auth/login/magic-link` – demande un lien magique par email (primary)
-- `POST /auth/login/social` – accepte un token OAuth (Google, Apple, etc.) (secondary)
-- `GET /auth/verify-magic-link?token=...` – échange un magic link contre des tokens
+- [ok]`POST /auth/login` – email/mot de passe → retourne tokens (access + refresh) (primary)
+- [ok]`POST /auth/login/magic-link` – demande un lien magique par email (primary)
+- [skip]`POST /auth/login/social` – accepte un token OAuth (Google, Apple, etc.) (secondary)
+- [ok]`GET /auth/verify-magic-link?token=...` – échange un magic link contre des tokens
 
 ## 3. **Endpoints de tokens** (primary)
 
 - `POST /auth/refresh` – rafraîchir l'access token (avec refresh token)
 - `POST /auth/logout` – révoquer le refresh token
 - `POST /auth/revoke-all` – déconnecter tous les appareils
+  5
 
 ## 4. **Endpoints de gestion de mot de passe**
 

@@ -3,10 +3,10 @@
 namespace App\IdentityAndAccess\Application\CommandHandler;
 
 use App\IdentityAndAccess\Application\Command\SendMagicLinkCommand;
-use App\IdentityAndAccess\Domain\Entity\MagicLink;
+use App\IdentityAndAccess\Domain\Entity\OneTimePassword;
 use App\IdentityAndAccess\Domain\Exception\EmailNotFoundException;
 use App\IdentityAndAccess\Domain\Exception\UserCredentialsException;
-use App\IdentityAndAccess\Domain\Repository\MagicLinkRepository;
+use App\IdentityAndAccess\Domain\Repository\OneTimePasswordRepository;
 use App\IdentityAndAccess\Domain\Repository\UserRepository;
 use App\IdentityAndAccess\Domain\Service\MagicLinkUrlGenerator;
 use App\IdentityAndAccess\Domain\ValueObject\MagicLinkToken;
@@ -22,7 +22,7 @@ class SendMagicLinkHandler implements CommandHandlerBus
 {
    public function __construct(
       private UserRepository $user,
-      private MagicLinkRepository $magicLink,
+      private OneTimePasswordRepository $magicLink,
       private UuidGenerator $uuid,
       private TokenGenerator $token,
       private Mailer $mailer,
@@ -42,7 +42,7 @@ class SendMagicLinkHandler implements CommandHandlerBus
       $magicLink = $this->magicLink->findValidByEmail($email);
 
       if (!$magicLink) {
-         $magicLink = MagicLink::create(
+         $magicLink = OneTimePassword::create(
             $this->uuid->generate(),
             $email,
             new MagicLinkToken(

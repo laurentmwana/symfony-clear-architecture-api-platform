@@ -2,9 +2,9 @@
 
 namespace App\IdentityAndAccess\Domain\Service;
 
-use App\IdentityAndAccess\Domain\Entity\MagicLink;
+use App\IdentityAndAccess\Domain\Entity\OneTimePassword;
 
 interface MagicLinkUrlGenerator
 {
-   public function generate(MagicLink $magicLink): string;
+   public function generate(OneTimePassword $magicLink): string;
 }

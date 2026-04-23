@@ -3,8 +3,9 @@
 namespace App\SharedContext\Domain\ValueObject;
 
 use App\SharedContext\Domain\Exception\ValueObjectInvalidException;
+use Stringable;
 
-final class Attempts
+final class Attempts implements Stringable
 {
    public function __construct(
       private readonly int $value,
@@ -25,6 +26,11 @@ final class Attempts
    }
 
    public function value(): int
+   {
+      return $this->value;
+   }
+
+   public function __toString(): string
    {
       return $this->value;
    }

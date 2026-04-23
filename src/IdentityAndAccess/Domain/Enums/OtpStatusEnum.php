@@ -4,7 +4,7 @@ namespace App\IdentityAndAccess\Domain\Enums;
 
 use App\SharedContext\Domain\Traits\Enumerable;
 
-enum MagicLinkStatusEnum: string
+enum OtpStatusEnum: string
 {
    use Enumerable;
 

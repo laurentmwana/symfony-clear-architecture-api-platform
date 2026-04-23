@@ -2,7 +2,7 @@
 
 namespace App\IdentityAndAccess\Infrastructure\Persistance\Doctrine\Dbal\Types;
 
-use App\IdentityAndAccess\Domain\ValueObject\MagicLinkStatus;
+use App\IdentityAndAccess\Domain\ValueObject\OtpStatus;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
@@ -17,13 +17,13 @@ class MagicLinkStatusType extends Type
       ]);
    }
 
-   public function convertToPHPValue($value, AbstractPlatform $platform): ?MagicLinkStatus
+   public function convertToPHPValue($value, AbstractPlatform $platform): ?OtpStatus
    {
       if ($value === null) {
          return null;
       }
 
-      return MagicLinkStatus::fromString($value);
+      return OtpStatus::fromString($value);
    }
 
    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
@@ -32,7 +32,7 @@ class MagicLinkStatusType extends Type
          return null;
       }
 
-      if ($value instanceof MagicLinkStatus) {
+      if ($value instanceof OtpStatus) {
          return $value->value()->value;
       }
 

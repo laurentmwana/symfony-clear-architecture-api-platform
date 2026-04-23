@@ -33,7 +33,7 @@ final class Password implements Stringable
 
    public static function fromPlain(string $plainPassword): self
    {
-      return new self($hash);
+      return new self($plainPassword);
    }
 
 
@@ -47,6 +47,11 @@ final class Password implements Stringable
    public function needsRehash(PasswordHasher $hasher): bool
    {
       return $hasher->needsRehash($this->value);
+   }
+
+   public function value(): string
+   {
+      return $this->value;
    }
 
    public function __toString(): string

@@ -4,7 +4,7 @@ namespace App\IdentityAndAccess\Application\CommandHandler;
 
 use App\IdentityAndAccess\Application\Command\VerifyMagicLinkCommand;
 use App\IdentityAndAccess\Domain\Exception\InvalidMagicLinkException;
-use App\IdentityAndAccess\Domain\Repository\MagicLinkRepository;
+use App\IdentityAndAccess\Domain\Repository\OneTimePasswordRepository;
 use App\IdentityAndAccess\Domain\Repository\UserRepository;
 use App\IdentityAndAccess\Domain\Service\JwtTokenGenerator;
 use App\SharedContext\Application\Bus\Command\CommandHandlerBus;
@@ -12,7 +12,7 @@ use App\SharedContext\Application\Bus\Command\CommandHandlerBus;
 class VerifyMagicLinkHandler implements CommandHandlerBus
 {
    public function __construct(
-      private MagicLinkRepository $magicLink,
+      private OneTimePasswordRepository $magicLink,
       private UserRepository $user,
       private JwtTokenGenerator $jwt
    ) {}

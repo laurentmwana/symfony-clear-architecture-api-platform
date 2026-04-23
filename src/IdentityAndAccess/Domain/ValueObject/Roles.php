@@ -4,86 +4,109 @@ namespace App\IdentityAndAccess\Domain\ValueObject;
 
 use App\IdentityAndAccess\Domain\Enums\RoleUserEnum;
 use App\SharedContext\Domain\Exception\ValueObjectInvalidException;
+use Stringable;
 
-final class Roles
+final class Roles implements Stringable
 {
-  private array $values;
+   private array $values;
 
-  private function __construct(array $roles)
-  {
-    $this->values = $roles;
-  }
+   private function __construct(array $roles)
+   {
+      $this->values = $roles;
+   }
 
-  public static function default(): self
-  {
-    return new self([RoleUserEnum::ROLE_USER->value]);
-  }
+   public static function default(): self
+   {
+      return new self([RoleUserEnum::ROLE_USER->value]);
+   }
 
-  public static function fromArray(array $roles): self
-  {
-    if (empty($roles)) {
-      return self::default();
-    }
-
-    foreach ($roles as $role) {
-      if (!RoleUserEnum::tryFrom($role)) {
-        throw new ValueObjectInvalidException('Invalid role: ' . $role);
+   public static function fromArray(array $roles): self
+   {
+      if (empty($roles)) {
+         return self::default();
       }
-    }
 
-    $roles[] = RoleUserEnum::ROLE_USER->value;
-    $roles = array_values(array_unique($roles));
+      $validated = [];
 
-    return new self($roles);
-  }
+      foreach ($roles as $role) {
+         if (!RoleUserEnum::tryFrom($role)) {
+            throw new ValueObjectInvalidException('Invalid role: ' . $role);
+         }
+         $validated[] = $role;
+      }
 
-  public function has(string $role): bool
-  {
-    return in_array($role, $this->values, true);
-  }
+      // Toujours garantir ROLE_USER
+      $validated[] = RoleUserEnum::ROLE_USER->value;
 
-  public function add(string $role): self
-  {
-    if (!RoleUserEnum::tryFrom($role)) {
-      throw new ValueObjectInvalidException('Invalid role: ' . $role);
-    }
+      return new self(array_values(array_unique($validated)));
+   }
 
-    if (in_array($role, $this->values, true)) {
-      return $this;
-    }
+   public static function fromJson(string $roles): self
+   {
+      $decoded = json_decode($roles, true);
 
-    return new self([...$this->values, $role]);
-  }
+      if (!is_array($decoded)) {
+         throw new ValueObjectInvalidException('Invalid JSON for roles');
+      }
 
-  public function remove(string $role): self
-  {
-    if ($role === RoleUserEnum::ROLE_USER->value) {
-      return $this;
-    }
+      return self::fromArray($decoded);
+   }
 
-    $key = array_search($role, $this->values, true);
-    if ($key === false) {
-      return $this;
-    }
+   public function has(string $role): bool
+   {
+      return in_array($role, $this->values, true);
+   }
 
-    $new = $this->values;
-    unset($new[$key]);
+   public function add(string $role): self
+   {
+      if (!RoleUserEnum::tryFrom($role)) {
+         throw new ValueObjectInvalidException('Invalid role: ' . $role);
+      }
 
-    return new self(array_values($new));
-  }
+      if ($this->has($role)) {
+         return $this;
+      }
 
-  public function toArray(): array
-  {
-    return $this->values;
-  }
+      return new self([...$this->values, $role]);
+   }
 
-  public function equals(self $other): bool
-  {
-    return $this->values == $other->values;
-  }
+   public function remove(string $role): self
+   {
+      // On ne peut pas supprimer ROLE_USER
+      if ($role === RoleUserEnum::ROLE_USER->value) {
+         return $this;
+      }
 
-  public function isSimpleUser(): bool
-  {
-    return $this->values == [RoleUserEnum::ROLE_USER->value];
-  }
+      $new = array_filter(
+         $this->values,
+         fn($r) => $r !== $role
+      );
+
+      return new self(array_values($new));
+   }
+
+   public function toArray(): array
+   {
+      return $this->values;
+   }
+
+   public function toJson(): string
+   {
+      return json_encode($this->values, JSON_THROW_ON_ERROR);
+   }
+
+   public function equals(self $other): bool
+   {
+      return $this->values === $other->values;
+   }
+
+   public function isSimpleUser(): bool
+   {
+      return $this->values === [RoleUserEnum::ROLE_USER->value];
+   }
+
+   public function __toString(): string
+   {
+      return $this->toJson();
+   }
 }

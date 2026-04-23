@@ -2,7 +2,7 @@
 
 namespace App\IdentityAndAccess\Infrastructure\Framework\Service;
 
-use App\IdentityAndAccess\Domain\Entity\MagicLink;
+use App\IdentityAndAccess\Domain\Entity\OneTimePassword;
 use App\IdentityAndAccess\Domain\Service\MagicLinkUrlGenerator;
 
 class SymfonyMagicLinkUrlGenerator implements MagicLinkUrlGenerator
@@ -13,7 +13,7 @@ class SymfonyMagicLinkUrlGenerator implements MagicLinkUrlGenerator
       private string $frontendUrl
    ) {}
 
-   public function generate(MagicLink $magicLink): string
+   public function generate(OneTimePassword $magicLink): string
    {
       return sprintf(
          '%s%s?token=%s',

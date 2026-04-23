@@ -12,13 +12,13 @@ use DateTimeImmutable;
 
 final class User
 {
-   private readonly Uuid $id;
-   private Name $name;
-   private Email $email;
-   private Phone $phone;
-   private Password $password;
-   private readonly Roles $roles;
-   private readonly DateTimeImmutable $createdAt;
+   private string $id;
+   private string $name;
+   private string $email;
+   private string $phone;
+   private string $password;
+   private string $roles;
+   private DateTimeImmutable $createdAt;
    private ?DateTimeImmutable $updatedAt = null;
    private ?DateTimeImmutable $emailVerifiedAt = null;
 
@@ -32,12 +32,15 @@ final class User
       ?DateTimeImmutable $createdAt = null,
       ?DateTimeImmutable $updatedAt = null
    ) {
-      $this->id = $id;
-      $this->name = $name;
-      $this->email = $email;
-      $this->password = $password;
-      $this->phone = $phone;
-      $this->roles = $roles ?? Roles::default();
+      $this->id = $id->value();
+      $this->name = $name->value();
+      $this->email = $email->value();
+      $this->phone = $phone->value();
+      $this->password = $password->value();
+
+      $roles = $roles ?? Roles::default();
+      $this->roles = $roles->toJson();
+
       $this->createdAt = $createdAt ?? new DateTimeImmutable();
       $this->updatedAt = $updatedAt ?? new DateTimeImmutable();
    }
@@ -60,10 +63,10 @@ final class User
       );
    }
 
-   public function changePassword(Password $newPassword)
+   public function changePassword(Password $newPassword): void
    {
-      $this->password = $newPassword;
-      $this->updatedAt = new \DateTimeImmutable();
+      $this->password = $newPassword->value();
+      $this->updatedAt = new DateTimeImmutable();
    }
 
    public function isVerified(): bool
@@ -73,44 +76,44 @@ final class User
 
    public function markAsVerified(): void
    {
-      $this->emailVerifiedAt = new \DateTimeImmutable();
-      $this->updatedAt = new \DateTimeImmutable();
+      $this->emailVerifiedAt = new DateTimeImmutable();
+      $this->updatedAt = new DateTimeImmutable();
    }
 
    public function markAsInVerified(): void
    {
       $this->emailVerifiedAt = null;
-      $this->updatedAt = new \DateTimeImmutable();
+      $this->updatedAt = new DateTimeImmutable();
    }
 
    public function getId(): Uuid
    {
-      return $this->id;
+      return new Uuid($this->id);
    }
 
    public function getName(): Name
    {
-      return $this->name;
+      return new Name($this->name);
    }
 
    public function getEmail(): Email
    {
-      return $this->email;
+      return new Email($this->email);
    }
 
    public function getPhone(): Phone
    {
-      return $this->phone;
+      return new Phone($this->phone);
    }
 
    public function getPassword(): Password
    {
-      return $this->password;
+      return Password::fromHash($this->password);
    }
 
    public function getRoles(): Roles
    {
-      return $this->roles;
+      return Roles::fromJson($this->roles);
    }
 
    public function getCreatedAt(): DateTimeImmutable
