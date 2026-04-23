@@ -78,6 +78,24 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "app:code-quality": [
+            "./vendor/bin/ecs check",
+            "bin/console lint:yaml config --parse-tags",
+            "bin/console lint:twig templates",
+            "bin/console lint:container",
+            "./vendor/bin/phpstan analyse --memory-limit=-1",
+            "./vendor/bin/rector --dry-run"
+        ],
+        "app:migration": [
+            "bin/console doctrine:migrations:migrate"
+        ],
+        "app:tests": [
+            "bin/console doctrine:database:drop --force --if-exists --env=test",
+            "bin/console doctrine:database:create --env=test",
+            "bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=test",
+            "bin/console cache:clear --env=test",
+            "bin/phpunit"
         ]
     },
     "conflict": {
@@ -94,13 +112,18 @@
         "doctrine/doctrine-fixtures-bundle": "^4.3",
         "fakerphp/faker": "^1.24",
         "justinrainbow/json-schema": "^6.8",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^13.1",
+        "rector/rector": "^2.4",
         "symfony/browser-kit": "8.0.*",
         "symfony/css-selector": "8.0.*",
         "symfony/http-client": "8.0.*",
         "symfony/maker-bundle": "^1.67",
         "symfony/stopwatch": "8.0.*",
         "symfony/web-profiler-bundle": "8.0.*",
+        "symplify/easy-coding-standard": "^13.0",
         "zenstruck/foundry": "^2.9"
     }
 }
