@@ -5,6 +5,7 @@ on:
         branches: [develop]
     pull_request:
         branches: [develop]
+
 jobs:
     quality:
         name: Quality Analysis
@@ -17,21 +18,23 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 8.3
+                  php-version: "8.4"
                   tools: composer:v2
+                  extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
 
             - name: Setup Cache
               run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
 
-            - name: Caching deps
+            - name: Cache Composer dependencies
               uses: actions/cache@v4
               with:
                   path: ${{ env.COMPOSER_CACHE_DIR }}
-                  key: php8.3-composer-${{ hashFiles('**/composer.lock') }}
-                  restore-keys: php8.4-composer-
+                  key: php8.4-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: |
+                      php8.4-composer-
 
-            - name: Install deps
+            - name: Install dependencies
               run: make install
 
             - name: Run quality checks
-              run: make lint stan test
+              run: make lint && make stan && make test
