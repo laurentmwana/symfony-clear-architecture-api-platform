@@ -2,9 +2,9 @@ name: Quality Analysis
 
 on:
     push:
-        branches: [main]
+        branches: [develop]
     pull_request:
-
+        branches: [develop]
 jobs:
     quality:
         name: Quality Analysis
