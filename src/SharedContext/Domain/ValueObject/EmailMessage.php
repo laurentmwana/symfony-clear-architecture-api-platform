@@ -4,10 +4,15 @@ namespace App\SharedContext\Domain\ValueObject;
 
 use App\SharedContext\Domain\Enums\EmailSubjectEnum;
 use App\SharedContext\Domain\Enums\EmailTemplateEnum;
-use App\SharedContext\Domain\ValueObject\Email;
 
 final class EmailMessage
 {
+   /**
+    * @param Email $to
+    * @param EmailTemplateEnum $template
+    * @param EmailSubjectEnum $subject
+    * @param array<string, mixed> $context
+    */
    public function __construct(
       private Email $to,
       private EmailTemplateEnum $template,
@@ -30,6 +35,9 @@ final class EmailMessage
       return $this->template;
    }
 
+   /**
+    * @return array<string, mixed>
+    */
    public function context(): array
    {
       return $this->context;

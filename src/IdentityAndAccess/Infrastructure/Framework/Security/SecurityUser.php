@@ -2,17 +2,15 @@
 
 namespace App\IdentityAndAccess\Infrastructure\Framework\Security;
 
-use App\SharedContext\Domain\ValueObject\Email;
-use App\SharedContext\Domain\ValueObject\Uuid;
 use App\IdentityAndAccess\Domain\Entity\User;
 use App\IdentityAndAccess\Domain\ValueObject\Password;
 use App\IdentityAndAccess\Domain\ValueObject\Roles;
+use App\SharedContext\Domain\ValueObject\Email;
 use App\SharedContext\Domain\ValueObject\Name;
 use App\SharedContext\Domain\ValueObject\Phone;
-use Symfony\Component\Security\Core\User\{
-   UserInterface,
-   PasswordAuthenticatedUserInterface
-};
+use App\SharedContext\Domain\ValueObject\Uuid;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 final readonly class SecurityUser implements
    UserInterface,
@@ -51,13 +49,14 @@ final readonly class SecurityUser implements
       );
    }
 
-   #[\Override]
-   public function getPassword(): ?string
+   public function getPassword(): string
    {
-      return $this->password;
+      return $this->password->value();
    }
 
-   #[\Override]
+   /**
+    * @return array<int, string>
+    */
    public function getRoles(): array
    {
       return $this->roles->toArray();
@@ -66,10 +65,10 @@ final readonly class SecurityUser implements
    #[\Override]
    public function getUserIdentifier(): string
    {
-      return $this->email;
+      return $this->email->value();
    }
 
-   public function getId()
+   public function getId(): string
    {
       return $this->id->value();
    }

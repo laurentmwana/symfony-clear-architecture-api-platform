@@ -13,11 +13,20 @@ final class Phone implements Stringable
    {
       $value = trim($value);
 
-      $cleaned = preg_replace('/[^0-9+]/', '', $value);
+      $cleaned = (string) preg_replace('/[^0-9+]/', '', $value);
+
+      if ($cleaned === '') {
+         throw new ValueObjectInvalidException(
+            'Phone number cannot be empty.'
+         );
+      }
 
       if (!preg_match('/^\+243[0-9]{9}$/', $cleaned)) {
          throw new ValueObjectInvalidException(
-            sprintf('Invalid phone number: "%s". Must be like +243812345678', $value)
+            sprintf(
+               'Invalid phone number: "%s". Must be like +243812345678',
+               $value
+            )
          );
       }
 

@@ -2,7 +2,6 @@
 
 namespace App\SharedContext\Infrastructure\Persistance\Doctrine\Orm;
 
-use Doctrine\ORM\EntityManagerInterface;
 
 trait DoctrineRepositoryTrait
 {

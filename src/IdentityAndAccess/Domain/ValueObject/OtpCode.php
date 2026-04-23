@@ -5,22 +5,29 @@ namespace App\IdentityAndAccess\Domain\ValueObject;
 use InvalidArgumentException;
 use Stringable;
 
-class OtpCode implements Stringable
+final class OtpCode implements Stringable
 {
-   private const MAX_LENGTH = 6;
+   private const LENGTH = 6;
 
    private string $value;
 
    public function __construct(string $value)
    {
-      if (is_string($value) && strlen($value) != self::MAX_LENGTH) {
-         throw new InvalidArgumentException("");
+      $value = trim($value);
+
+      if (!preg_match('/^\d{' . self::LENGTH . '}$/', $value)) {
+         throw new InvalidArgumentException(
+            sprintf('Invalid OTP code: "%s". Must be %d digits.', $value, self::LENGTH)
+         );
       }
 
       $this->value = $value;
    }
 
-
+   public function value(): string
+   {
+      return $this->value;
+   }
 
    public function __toString(): string
    {

@@ -16,7 +16,6 @@ class UserFixtures extends Fixture
 {
    private const PASSWORD_DEFAULT = '$2y$13$crNg58xtI2iQwCnVqjmZS.5q4LI9/SGLfYu8hU.pme2/j2DemE6jW';
 
-   // Préfixes téléphone RDC
    private const PHONE_PREFIXES = [
       '24380',
       '24381',
@@ -59,6 +58,10 @@ class UserFixtures extends Fixture
       return User::create($uuid, $name, $email, $phone, $password);
    }
 
+   /**
+    * @param integer $count
+    * @return User[]
+    */
    public static function createMany(int $count): array
    {
       $users = [];

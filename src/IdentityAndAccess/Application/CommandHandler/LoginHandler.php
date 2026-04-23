@@ -27,7 +27,7 @@ final class LoginHandler implements CommandHandlerBus
       return $this->jwt->generate($user);
    }
 
-   private function isMatch(string $hashPassword, string $plainPassword)
+   private function isMatch(string $hashPassword, string $plainPassword): bool
    {
       return $this->hasher->verify($hashPassword, $plainPassword);
    }

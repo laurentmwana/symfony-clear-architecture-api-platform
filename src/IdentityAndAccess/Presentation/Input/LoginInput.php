@@ -14,24 +14,24 @@ final class LoginInput
    #[Assert\NotBlank()]
    private ?string $password = null;
 
-   public function getIdentifiant()
+   public function getIdentifiant(): ?string
    {
       return $this->identifiant;
    }
 
-   public function setIdentifiant($identifiant)
+   public function setIdentifiant(?string $identifiant): static
    {
       $this->identifiant = $identifiant;
 
       return $this;
    }
 
-   public function getPassword()
+   public function getPassword(): ?string
    {
       return $this->password;
    }
 
-   public function setPassword($password)
+   public function setPassword(?string $password): static
    {
       $this->password = $password;
 

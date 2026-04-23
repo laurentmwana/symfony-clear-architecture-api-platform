@@ -11,12 +11,18 @@ enum RoleUserEnum: string
    case ROLE_USER = "ROLE_USER";
    case ROLE_ADMIN = "ROLE_ADMIN";
 
-   public static function forDefault()
+   /**
+    * @return string[]
+    */
+   public static function forDefault(): array
    {
       return [self::ROLE_USER->value];
    }
 
-   public static function forAdmin()
+   /**
+    * @return string[]
+    */
+   public static function forAdmin(): array
    {
       return [self::ROLE_USER->value, self::ROLE_ADMIN->value];
    }

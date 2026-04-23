@@ -4,27 +4,24 @@ namespace App\IdentityAndAccess\Presentation\Contraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class PhoneOrEmailValidator extends ConstraintValidator
 {
+   /**
+    * @param string|null $value
+    * @param PhoneOrEmail $constraint
+    */
    public function validate($value, Constraint $constraint): void
    {
-      /* @var \App\IdentityAndAccess\Presentation\Constraints\PhoneOrEmail $constraint */
-
       if (null === $value || '' === $value) {
          return;
-      }
-
-      if (!is_string($value)) {
-         throw new UnexpectedTypeException($value, 'string');
       }
 
       if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
          return;
       }
 
-      $cleanedPhone = preg_replace('/[\s\-]/', '', $value);
+      $cleanedPhone = (string) preg_replace('/[\s\-]/', '', $value);
 
       if (preg_match('/^\+\d{8,15}$/', $cleanedPhone)) {
          return;

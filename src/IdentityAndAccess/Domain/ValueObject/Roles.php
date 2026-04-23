@@ -8,8 +8,14 @@ use Stringable;
 
 final class Roles implements Stringable
 {
+   /**
+    * @var list<string>
+    */
    private array $values;
 
+   /**
+    * @param list<string> $roles
+    */
    private function __construct(array $roles)
    {
       $this->values = $roles;
@@ -20,6 +26,9 @@ final class Roles implements Stringable
       return new self([RoleUserEnum::ROLE_USER->value]);
    }
 
+   /**
+    * @param array<int, mixed> $roles
+    */
    public static function fromArray(array $roles): self
    {
       if (empty($roles)) {
@@ -32,10 +41,10 @@ final class Roles implements Stringable
          if (!RoleUserEnum::tryFrom($role)) {
             throw new ValueObjectInvalidException('Invalid role: ' . $role);
          }
+
          $validated[] = $role;
       }
 
-      // Toujours garantir ROLE_USER
       $validated[] = RoleUserEnum::ROLE_USER->value;
 
       return new self(array_values(array_unique($validated)));
@@ -72,19 +81,21 @@ final class Roles implements Stringable
 
    public function remove(string $role): self
    {
-      // On ne peut pas supprimer ROLE_USER
       if ($role === RoleUserEnum::ROLE_USER->value) {
          return $this;
       }
 
       $new = array_filter(
          $this->values,
-         fn($r) => $r !== $role
+         fn(string $r): bool => $r !== $role
       );
 
       return new self(array_values($new));
    }
 
+   /**
+    * @return list<string>
+    */
    public function toArray(): array
    {
       return $this->values;

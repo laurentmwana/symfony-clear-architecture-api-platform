@@ -9,15 +9,17 @@ use App\SharedContext\Infrastructure\Persistance\Doctrine\Orm\DoctrineRepository
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<OneTimePassword>
+ */
 class DoctrineOneTimePasswordRepository extends ServiceEntityRepository implements OneTimePasswordRepository
 {
    use DoctrineRepositoryTrait;
 
    public function __construct(ManagerRegistry $registry)
    {
-      return parent::__construct($registry, OneTimePassword::class);
+      parent::__construct($registry, OneTimePassword::class);
    }
-
 
    public function findValidByUserId(Uuid $userId): ?OneTimePassword
    {

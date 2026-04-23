@@ -196,7 +196,7 @@ class LoginProcessorTest extends AbstractApiTestCase
 
    public function testLoginWithInvalidEmailFormat(): void
    {
-      $this->createUser('test5@example.com', '+243820110127', 'password123456');
+      $this->createUser('test5@example.com', '+243820110127');
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
@@ -211,7 +211,7 @@ class LoginProcessorTest extends AbstractApiTestCase
 
    public function testLoginWithWrongPhonePrefix(): void
    {
-      $this->createUser('test6@example.com', '+243820110128', 'password123456');
+      $this->createUser('test6@example.com', '+243820110128');
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [

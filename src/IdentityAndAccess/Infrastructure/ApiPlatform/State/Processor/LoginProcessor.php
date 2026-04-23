@@ -13,7 +13,11 @@ use App\SharedContext\Application\Bus\BusDispatcher;
 use App\SharedContext\Domain\Service\RateLimiter;
 use App\SharedContext\Domain\ValueObject\Email;
 use App\SharedContext\Domain\ValueObject\Phone;
+use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @implements ProcessorInterface<LoginInput, JwtTokenOutput>
+ */
 class LoginProcessor implements ProcessorInterface
 {
    public function __construct(
@@ -21,37 +25,54 @@ class LoginProcessor implements ProcessorInterface
       private RateLimiter $rateLimiter
    ) {}
 
-   public function process(mixed $data, Operation $operation, array $uriVariables = [], array $context = [])
-   {
-      /** @var \Symfony\Component\HttpFoundation\Request */
+   public function process(
+      mixed $data,
+      Operation $operation,
+      array $uriVariables = [],
+      array $context = []
+   ): JwtTokenOutput {
+      /** @var Request|null $request */
       $request = $context['request'] ?? null;
 
-      $this->rateLimiter->throttle($request->getClientIp());
-
-      if (!$data instanceof LoginInput) {
-         throw new \InvalidArgumentException('Expected instance of LoginInput.');
+      if (!$request) {
+         throw new \RuntimeException('Missing request in context.');
       }
 
-      $identifiant = $this->getIdentifiant($data->getIdentifiant());
-      $password = Password::fromPlainUnhashed($data->getPassword());
+      $ip = $request->getClientIp();
 
-      $command = new LoginCommand($identifiant, $password);
+      if (!$ip) {
+         throw new \RuntimeException('Cannot resolve client IP.');
+      }
 
-      $token = $this->bus->dispatch($command);
+      $this->rateLimiter->throttle($ip);
+
+      $identifiantRaw = $data->getIdentifiant();
+      $passwordRaw = $data->getPassword();
+
+      if (!$identifiantRaw || !$passwordRaw) {
+         throw new \InvalidArgumentException('Invalid credentials.');
+      }
+
+      $identifiant = $this->getIdentifiant($identifiantRaw);
+      $password = Password::fromPlainUnhashed($passwordRaw);
+
+      $token = $this->bus->dispatch(
+         new LoginCommand($identifiant, $password)
+      );
 
       return new JwtTokenOutput($token);
    }
 
    private function getIdentifiant(string $identifiant): Email|Phone
    {
+      if (filter_var($identifiant, FILTER_VALIDATE_EMAIL)) {
+         return new Email($identifiant);
+      }
+
       try {
          return new Phone($identifiant);
       } catch (\Throwable $th) {
-         try {
-            return new Email($identifiant);
-         } catch (\Throwable $th) {
-            throw new UserCredentialsException();
-         }
+         throw new UserCredentialsException();
       }
    }
 }

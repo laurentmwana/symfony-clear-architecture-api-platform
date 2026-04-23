@@ -4,12 +4,18 @@ namespace App\SharedContext\Domain\Traits;
 
 trait Enumerable
 {
-   public static function values()
+   /**
+    * @return mixed[]
+    */
+   public static function values(): array
    {
       return array_map(fn(self $enum) => $enum->value, self::cases());
    }
 
-   public static function names()
+   /**
+    * @return mixed[]
+    */
+   public static function names(): array
    {
       return array_map(fn(self $enum) => $enum->name, self::cases());
    }

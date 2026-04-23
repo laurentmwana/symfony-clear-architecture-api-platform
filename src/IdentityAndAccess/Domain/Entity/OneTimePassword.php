@@ -17,13 +17,17 @@ class OneTimePassword
    private string $userId;
    private string $code;
    private string $status;
+
    private DateTimeImmutable $expiresAt;
    private DateTimeImmutable $createdAt;
    private DateTimeImmutable $updatedAt;
+
    private ?DateTimeImmutable $usedAt = null;
+
    private int $attempts;
-   private ?string $ipAddress;
-   private ?string $userAgent;
+
+   private ?string $ipAddress = null;
+   private ?string $userAgent = null;
 
    private function __construct(
       Uuid $id,
@@ -37,14 +41,17 @@ class OneTimePassword
       ?DateTimeImmutable $createdAt = null,
       ?DateTimeImmutable $updatedAt = null,
    ) {
-      $this->id = $id;
-      $this->userId = $userId;
-      $this->code = $code;
-      $this->status = $status;
+      $this->id = (string) $id;
+      $this->userId = (string) $userId;
+      $this->code = (string) $code;
+      $this->status = (string) $status;
+
       $this->expiresAt = $expiresAt;
       $this->attempts = $attempts->value();
-      $this->ipAddress = $ipAddress;
-      $this->userAgent = $userAgent;
+
+      $this->ipAddress = $ipAddress?->value();
+      $this->userAgent = $userAgent?->value();
+
       $this->createdAt = $createdAt ?? new DateTimeImmutable();
       $this->updatedAt = $updatedAt ?? new DateTimeImmutable();
    }
@@ -71,7 +78,7 @@ class OneTimePassword
 
    public function markAsUsed(): void
    {
-      $this->status = new OtpStatus(OtpStatusEnum::USED);
+      $this->status = OtpStatusEnum::USED->value;
       $this->usedAt = new DateTimeImmutable();
       $this->updatedAt = new DateTimeImmutable();
    }
@@ -87,48 +94,52 @@ class OneTimePassword
       return $this->expiresAt < new DateTimeImmutable();
    }
 
-   public function getId()
+   public function getId(): Uuid
    {
-      return $this->id;
+      return new Uuid($this->id);
    }
 
-   public function getAttempts()
+   public function getUserId(): Uuid
    {
-      return $this->attempts;
+      return new Uuid($this->userId);
    }
 
-   public function getIpAddress()
+   public function getCode(): OtpCode
    {
-      return $this->ipAddress;
+      return new OtpCode($this->code);
    }
 
-   public function getUserAgent()
+   public function getStatus(): OtpStatus
    {
-      return $this->userAgent;
+      return new OtpStatus(OtpStatusEnum::from($this->status));
    }
 
-   public function getExpiresAt()
+   public function getAttempts(): Attempts
+   {
+      return new Attempts($this->attempts);
+   }
+
+   public function getIpAddress(): ?IpAddress
+   {
+      return $this->ipAddress ? new IpAddress($this->ipAddress) : null;
+   }
+
+   public function getUserAgent(): ?UserAgent
+   {
+      return $this->userAgent ? new UserAgent($this->userAgent) : null;
+   }
+
+   public function getExpiresAt(): DateTimeImmutable
    {
       return $this->expiresAt;
    }
 
-   public function getUserId()
-   {
-      return $this->userId;
-   }
-
-   public function getCode()
-   {
-      return $this->code;
-   }
-
-
-   public function getCreatedAt()
+   public function getCreatedAt(): DateTimeImmutable
    {
       return $this->createdAt;
    }
 
-   public function getUpdatedAt()
+   public function getUpdatedAt(): DateTimeImmutable
    {
       return $this->updatedAt;
    }

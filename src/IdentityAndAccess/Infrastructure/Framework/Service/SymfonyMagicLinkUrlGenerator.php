@@ -19,7 +19,7 @@ class SymfonyMagicLinkUrlGenerator implements MagicLinkUrlGenerator
          '%s%s?token=%s',
          rtrim($this->frontendUrl, '/'),
          self::PATH,
-         $magicLink->getToken()->value()
+         $magicLink->getCode()->value()
       );
    }
 }

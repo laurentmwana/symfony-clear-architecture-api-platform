@@ -7,6 +7,7 @@ use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\IdentityAndAccess\Domain\Entity\User;
 use App\IdentityAndAccess\Infrastructure\Persistance\Fixtures\UserFixtures;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Cache\CacheItemPoolInterface;
 
 abstract class AbstractApiTestCase extends ApiTestCase
 {
@@ -14,15 +15,17 @@ abstract class AbstractApiTestCase extends ApiTestCase
 
    protected static ?bool $alwaysBootKernel = true;
 
-   private EntityManagerInterface $entityManager;
+   protected EntityManagerInterface $entityManager;
 
    protected function setUp(): void
    {
       parent::setUp();
-
       self::bootKernel();
 
-      $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
+      /** @var EntityManagerInterface $em */
+      $em = static::getContainer()->get(EntityManagerInterface::class);
+
+      $this->entityManager = $em;
    }
 
    public function getManager(): EntityManagerInterface
@@ -30,41 +33,60 @@ abstract class AbstractApiTestCase extends ApiTestCase
       return $this->entityManager;
    }
 
-   protected function createClientWithCredentials($token = null): Client
+   protected function createClientWithCredentials(?string $token = null): Client
    {
       $token = $token ?: $this->getToken();
 
-      return static::createClient([], ['headers' => ['authorization' => 'Bearer ' . $token]]);
+      return static::createClient([], [
+         'headers' => [
+            'authorization' => 'Bearer ' . $token,
+         ],
+      ]);
    }
 
-   protected function getHeadersContentJson()
+   /**
+    * @return string[]
+    */
+   public function getHeadersContentJson(): array
    {
       return [
          'accept' => 'application/json',
-         'Content-Type' => 'application/json'
+         'Content-Type' => 'application/json',
       ];
    }
 
-   protected function getHeadersAccept()
+   /**
+    * @return string[]
+    */
+   public function getHeadersAccept(): array
    {
       return [
          'accept' => 'application/json',
       ];
    }
 
-   protected function getToken($body = []): string
+   /**
+    * @param array<string, mixed> $body
+    * @return string
+    */
+   protected function getToken(array $body = []): string
    {
       if ($this->token) {
          return $this->token;
       }
 
-      $response = static::createClient()->request('POST', '/login', ['json' => $body ?: [
-         'username' => 'admin@example.com',
-         'password' => '$3cr3t',
-      ]]);
+      $response = static::createClient()->request('POST', '/login', [
+         'json' => $body ?: [
+            'username' => 'admin@example.com',
+            'password' => '$3cr3t',
+         ],
+      ]);
 
       $this->assertResponseIsSuccessful();
+
+      /** @var array{token: string} $data */
       $data = $response->toArray();
+
       $this->token = $data['token'];
 
       return $data['token'];
@@ -72,14 +94,18 @@ abstract class AbstractApiTestCase extends ApiTestCase
 
    protected function clearRateLimitCache(): void
    {
+      /** @var CacheItemPoolInterface $cachePool */
       $cachePool = static::getContainer()->get('cache.rate_limiter');
+
       $cachePool->clear();
    }
 
    public function createUser(?string $email = null, ?string $phone = null): User
    {
       $user = UserFixtures::createOne($email, $phone);
+
       $this->save($user);
+
       return $user;
    }
 

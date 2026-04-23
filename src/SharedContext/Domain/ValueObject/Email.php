@@ -2,10 +2,9 @@
 
 namespace App\SharedContext\Domain\ValueObject;
 
-use App\SharedContext\Domain\Exception\ValueObjectInvalidException;
-use Stringable;
+use InvalidArgumentException;
 
-final class Email implements Stringable
+final class Email
 {
    private string $value;
 
@@ -13,14 +12,14 @@ final class Email implements Stringable
    {
       $value = trim($value);
 
-      if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-         throw new ValueObjectInvalidException(sprintf('Invalid email: "%s".', $value));
+      if ($value === '' || !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+         throw new InvalidArgumentException(sprintf('Invalid email: "%s"', $value));
       }
 
       $this->value = $value;
    }
 
-   public function value()
+   public function value(): string
    {
       return $this->value;
    }
@@ -28,10 +27,5 @@ final class Email implements Stringable
    public function __toString(): string
    {
       return $this->value;
-   }
-
-   public function equals(self $other): bool
-   {
-      return $this->value === $other->value;
    }
 }

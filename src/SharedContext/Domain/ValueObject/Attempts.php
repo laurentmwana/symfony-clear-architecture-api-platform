@@ -12,11 +12,15 @@ final class Attempts implements Stringable
       private readonly int $max = 5
    ) {
       if ($value < 0) {
-         throw new ValueObjectInvalidException('Attempts must be >= 0');
+         throw new ValueObjectInvalidException(
+            'Attempts must be >= 0'
+         );
       }
 
       if ($value > $this->max) {
-         throw new ValueObjectInvalidException("Attempts cannot exceed {$this->max}");
+         throw new ValueObjectInvalidException(
+            "Attempts cannot exceed {$this->max}"
+         );
       }
    }
 
@@ -32,6 +36,6 @@ final class Attempts implements Stringable
 
    public function __toString(): string
    {
-      return $this->value;
+      return  (string)$this->value;
    }
 }
