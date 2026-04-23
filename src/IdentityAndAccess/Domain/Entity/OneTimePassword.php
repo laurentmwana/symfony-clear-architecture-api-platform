@@ -33,18 +33,20 @@ class OneTimePassword
       DateTimeImmutable $expiresAt,
       Attempts $attempts,
       ?IpAddress $ipAddress,
-      ?UserAgent $userAgent
+      ?UserAgent $userAgent,
+      ?DateTimeImmutable $createdAt = null,
+      ?DateTimeImmutable $updatedAt = null,
    ) {
       $this->id = $id;
       $this->userId = $userId;
       $this->code = $code;
       $this->status = $status;
       $this->expiresAt = $expiresAt;
-      $this->createdAt = new DateTimeImmutable();
-      $this->updatedAt = new DateTimeImmutable();
       $this->attempts = $attempts->value();
       $this->ipAddress = $ipAddress;
       $this->userAgent = $userAgent;
+      $this->createdAt = $createdAt ?? new DateTimeImmutable();
+      $this->updatedAt = $updatedAt ?? new DateTimeImmutable();
    }
 
    public static function create(
@@ -76,7 +78,7 @@ class OneTimePassword
 
    public function isUsed(): bool
    {
-      return $this->status->value() === OtpStatusEnum::USED
+      return $this->status === OtpStatusEnum::USED->value
          && $this->usedAt !== null;
    }
 
@@ -118,5 +120,16 @@ class OneTimePassword
    public function getCode()
    {
       return $this->code;
+   }
+
+
+   public function getCreatedAt()
+   {
+      return $this->createdAt;
+   }
+
+   public function getUpdatedAt()
+   {
+      return $this->updatedAt;
    }
 }
