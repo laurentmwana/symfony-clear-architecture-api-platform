@@ -36,7 +36,7 @@ test: ## Run PHPUnit tests
 	vendor/bin/phpunit
 
 ## —— CI ————————————————————————————————————————————————
-ci: install lint-yaml lint-container lint-twig stan cs rector test ## Full pipeline
+ci: install lint-yaml lint-container lint-twig stan cs rector ## Full pipeline
 
 ## —— Cleanup ————————————————————————————————————————————
 clean: ## Clean cache

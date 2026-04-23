@@ -34,5 +34,8 @@ jobs:
                   restore-keys: |
                       php8.4-composer-
 
+            - name: Install dependencies
+              run: composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
+
             - name: Run CI pipeline
               run: make ci
