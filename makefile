@@ -1,65 +1,43 @@
 PHP=php
 COMPOSER=composer
-APP_ENV=dev
 
-# Fichiers
-AUDIT_FILE=/tmp/security-audit.json
-
-# Default
 .DEFAULT_GOAL := help
 
-## —— 🎯 Help ——————————————————————————————————————————————
+## —— Help ————————————————————————————————————————————————
 help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "%-20s %s\n", $$1, $$2}'
 
-## —— 📦 Install ————————————————————————————————————————————
+## —— Install ———————————————————————————————————————————————
 install: ## Install dependencies
-	$(COMPOSER) install --prefer-dist --no-interaction --no-progress
+	$(COMPOSER) install --prefer-dist --no-interaction --no-progress --optimize-autoloader
 
-install-prod: ## Install without dev deps
-	$(COMPOSER) install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
+## —— Symfony Lint ——————————————————————————————————————————
+lint-yaml: ## Lint YAML files
+	$(PHP) bin/console lint:yaml config
 
-update: ## Update dependencies
-	$(COMPOSER) update
+lint-container: ## Lint Symfony container
+	$(PHP) bin/console lint:container
 
-## —— 🧹 Quality ————————————————————————————————————————————
-lint: ## Run lint (PHP syntax check)
-	find . -type f -name "*.php" -print0 | xargs -0 -n1 -P4 $(PHP) -l
+lint-twig: ## Lint Twig templates
+	$(PHP) bin/console lint:twig templates
 
-cs: ## Fix coding style (PHP-CS-Fixer)
-	vendor/bin/php-cs-fixer fix
 
-stan: ## Static analysis (PHPStan)
+stan: ## PHPStan static analysis
 	vendor/bin/phpstan analyse
 
-## —— 🧪 Tests ——————————————————————————————————————————————
-test: ## Run tests (PHPUnit)
+cs: ## Coding style (ECS)
+	vendor/bin/ecs check
+
+rector: ## Rector dry-run
+	vendor/bin/rector process --dry-run
+
+## —— Tests ————————————————————————————————————————————————
+test: ## Run PHPUnit tests
 	vendor/bin/phpunit
 
-test-coverage: ## Run tests with coverage
-	vendor/bin/phpunit --coverage-text
+## —— CI ————————————————————————————————————————————————
+ci: install lint-yaml lint-container lint-twig stan cs rector test ## Full pipeline
 
-## —— 🔒 Security ——————————————————————————————————————————
-audit: ## Run security audit
-	$(COMPOSER) audit \
-		--no-dev \
-		--abandoned=report \
-		--format=json \
-		> $(AUDIT_FILE)
-
-audit-check: audit ## Fail if vulnerabilities found
-	@if [ -s $(AUDIT_FILE) ]; then \
-		echo "❌ Vulnerabilities found:"; \
-		cat $(AUDIT_FILE); \
-		exit 1; \
-	else \
-		echo "✅ No vulnerabilities"; \
-	fi
-
-## —— ⚙️ CI ————————————————————————————————————————————————
-ci: install-prod lint stan test audit-check ## Full CI pipeline
-
-## —— 🧼 Cleanup ——————————————————————————————————————————
-clean: ## Clean cache & temp files
+## —— Cleanup ————————————————————————————————————————————
+clean: ## Clean cache
 	rm -rf var/cache/*
-	rm -f $(AUDIT_FILE)
