@@ -36,6 +36,8 @@
 
 ## 7. **Endpoints de session / appareils** (primary)
 
+- listener if user is logged
+
 - `GET /auth/sessions` – lister toutes les sessions actives
 - `DELETE /auth/sessions/{id}` – révoquer une session spécifique
 - `DELETE /auth/sessions` – révoquer toutes les autres sessions (sauf celle en cours)

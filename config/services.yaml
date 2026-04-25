@@ -29,6 +29,10 @@ services:
         App\SharedContext\Application\Bus\Message\MessageHandlerBus:
             tags:
                 - { name: messenger.message_handler, bus: "message.bus" }
+
+        App\SharedContext\Application\Bus\Event\EventHandlerBus:
+            tags:
+                - { name: messenger.message_handler, bus: "event.bus" }
     App\:
         resource: "../src/"
         exclude:
@@ -46,5 +50,6 @@ services:
     App\SharedContext\Infrastructure\Framework\Services\SymfonyRateLimiter:
         arguments:
             $limiterLocator: "@app.rate_limiter_locator"
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

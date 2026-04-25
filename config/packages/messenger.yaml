@@ -14,6 +14,7 @@ framework:
             message.bus: ~
             query.bus: ~
             command.bus: ~
+            event.bus: ~
 
         routing:
             App\SharedContext\Application\Bus\Message\AsyncMessage: async

@@ -12,7 +12,9 @@ use App\IdentityAndAccess\Presentation\Output\JwtTokenOutput;
 use App\SharedContext\Application\Bus\BusDispatcher;
 use App\SharedContext\Domain\Service\RateLimiter;
 use App\SharedContext\Domain\ValueObject\Email;
+use App\SharedContext\Domain\ValueObject\IpAddress;
 use App\SharedContext\Domain\ValueObject\Phone;
+use App\SharedContext\Domain\ValueObject\UserAgent;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -55,9 +57,16 @@ class LoginProcessor implements ProcessorInterface
 
       $identifiant = $this->getIdentifiant($identifiantRaw);
       $password = Password::fromPlainUnhashed($passwordRaw);
+      $ipAddress = new IpAddress($ip);
+      $userAgent = $request->headers->get('User-Agent');
 
       $token = $this->bus->dispatch(
-         new LoginCommand($identifiant, $password)
+         new LoginCommand(
+            $identifiant,
+            $password,
+            $ipAddress,
+            new UserAgent($userAgent)
+         )
       );
 
       return new JwtTokenOutput($token);

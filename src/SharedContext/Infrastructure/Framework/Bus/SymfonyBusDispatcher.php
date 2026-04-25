@@ -9,18 +9,17 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class SymfonyBusDispatcher implements BusDispatcher
 {
-   use HandleTrait {
-      HandleTrait::handle as messengerHandle;
-   }
+   use HandleTrait;
 
    public function __construct(MessageBusInterface $commandBus)
    {
       $this->messageBus = $commandBus;
    }
+
    public function dispatch(object $command): mixed
    {
       try {
-         return $this->messengerHandle($command);
+         return $this->handle($command);
       } catch (HandlerFailedException $e) {
          while ($e instanceof HandlerFailedException) {
             /** @var \Throwable $e */

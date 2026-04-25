@@ -1,6 +1,6 @@
 <?php
 
-namespace App\IdentityAndAccess\Infrastructure\Framework\Security;
+namespace App\IdentityAndAccess\Infrastructure\Framework\Service;
 
 use App\IdentityAndAccess\Domain\Entity\User;
 use App\IdentityAndAccess\Domain\Service\PasswordHasher;
