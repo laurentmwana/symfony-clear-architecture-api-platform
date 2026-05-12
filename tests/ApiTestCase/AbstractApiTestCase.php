@@ -5,7 +5,7 @@ namespace App\Tests\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\IdentityAndAccess\Domain\Entity\User;
-use App\IdentityAndAccess\Infrastructure\Persistance\Fixtures\UserFixtures;
+use App\IdentityAndAccess\Infrastructure\Persistence\Fixtures\UserFixtures;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheItemPoolInterface;
 

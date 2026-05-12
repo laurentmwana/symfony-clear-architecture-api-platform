@@ -6,18 +6,6 @@ doctrine:
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '16'
         types:
-            # uuid_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\UuidType
-            # email_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\EmailType
-            # phone_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\PhoneType
-            # name_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\NameType
-            # attemps_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\AttempsType
-            # password_type: App\IdentityAndAccess\Infrastructure\Persistance\Doctrine\Dbal\Types\PasswordType
-            # otp_password_type: App\OneTimePassword\Infrastructure\Persistance\Doctrine\Dbal\Types\OtpPasswordType
-            # roles_type: App\IdentityAndAccess\Infrastructure\Persistance\Doctrine\Dbal\Types\RolesType
-            # magic_link_status_type: App\IdentityAndAccess\Infrastructure\Persistance\Doctrine\Dbal\Types\MagicLinkStatusType
-            # magic_link_token_type: App\IdentityAndAccess\Infrastructure\Persistance\Doctrine\Dbal\Types\MagicLinkTokenType
-            # ip_address_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\IpAddressType
-            # user_agent_type: App\SharedContext\Infrastructure\Persistance\Doctrine\Dbal\Types\UserAgentType
 
         profiling_collect_backtrace: "%kernel.debug%"
     orm:
@@ -30,7 +18,7 @@ doctrine:
             App\IdentityAndAccess:
                 type: xml
                 is_bundle: false
-                dir: "%kernel.project_dir%/src/IdentityAndAccess/Infrastructure/Persistance/Doctrine/Mapping"
+                dir: "%kernel.project_dir%/src/IdentityAndAccess/Infrastructure/Persistence/Doctrine/Mapping"
                 prefix: 'App\IdentityAndAccess\Domain\Entity'
 
 when@test:
