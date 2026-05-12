@@ -3,6 +3,7 @@
 namespace App\IdentityAndAccess\Application\QueryHandler;
 
 use App\IdentityAndAccess\Application\Query\GetUserSessionsQuery;
+use App\IdentityAndAccess\Domain\Entity\Session;
 use App\IdentityAndAccess\Domain\Repository\SessionRepository;
 use App\SharedContext\Application\Bus\Query\QueryHandlerBus;
 
@@ -12,7 +13,11 @@ class GetUserSessionsHandler implements QueryHandlerBus
       private SessionRepository $session
    ) {}
 
-   public function __invoke(GetUserSessionsQuery $query)
+   /**
+    * @param GetUserSessionsQuery $query
+    * @return Session[]
+    */
+   public function __invoke(GetUserSessionsQuery $query): array
    {
       $sessions = $this->session->findAllByUserId($query->getUserId());
 
