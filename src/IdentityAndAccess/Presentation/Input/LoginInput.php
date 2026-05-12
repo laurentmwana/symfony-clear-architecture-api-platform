@@ -9,19 +9,19 @@ final class LoginInput
 {
    #[Assert\NotBlank()]
    #[PhoneOrEmail()]
-   private ?string $identifiant = null;
+   private ?string $identifier = null;
 
    #[Assert\NotBlank()]
    private ?string $password = null;
 
-   public function getIdentifiant(): ?string
+   public function getIdentifier(): ?string
    {
-      return $this->identifiant;
+      return $this->identifier;
    }
 
-   public function setIdentifiant(?string $identifiant): static
+   public function setIdentifier(?string $identifier): static
    {
-      $this->identifiant = $identifiant;
+      $this->identifier = $identifier;
 
       return $this;
    }

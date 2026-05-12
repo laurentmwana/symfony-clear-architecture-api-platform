@@ -11,16 +11,11 @@ use App\SharedContext\Domain\ValueObject\UserAgent;
 final class LoginCommand
 {
    public function __construct(
-      private Email|Phone $identifiant,
+      private Email|Phone $identifier,
       private Password $password,
       private ?IpAddress $ipAddress = null,
       private ?UserAgent $userAgent = null
    ) {}
-
-   public function getIdentifiant(): Email|Phone
-   {
-      return $this->identifiant;
-   }
 
    public function getPassword(): Password
    {
@@ -35,5 +30,11 @@ final class LoginCommand
    public function getUserAgent(): ?UserAgent
    {
       return $this->userAgent;
+   }
+
+
+   public function getIdentifier()
+   {
+      return $this->identifier;
    }
 }

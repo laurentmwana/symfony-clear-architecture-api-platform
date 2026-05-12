@@ -28,4 +28,11 @@ class DoctrineSessionRepository extends ServiceEntityRepository implements Sessi
          'userId' => $userId->value()
       ]);
    }
+
+   public function findAllByUserId(Uuid $userId): array
+   {
+      return $this->findBy([
+         'user_id' => $userId->value()
+      ]);
+   }
 }

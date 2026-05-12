@@ -48,21 +48,21 @@ class LoginProcessor implements ProcessorInterface
 
       $this->rateLimiter->throttle($ip);
 
-      $identifiantRaw = $data->getIdentifiant();
+      $identifierRaw = $data->getIdentifier();
       $passwordRaw = $data->getPassword();
 
-      if (!$identifiantRaw || !$passwordRaw) {
+      if (!$identifierRaw || !$passwordRaw) {
          throw new \InvalidArgumentException('Invalid credentials.');
       }
 
-      $identifiant = $this->getIdentifiant($identifiantRaw);
+      $identifier = $this->getIdentifier($identifierRaw);
       $password = Password::fromPlainUnhashed($passwordRaw);
       $ipAddress = new IpAddress($ip);
       $userAgent = $request->headers->get('User-Agent');
 
       $token = $this->bus->dispatch(
          new LoginCommand(
-            $identifiant,
+            $identifier,
             $password,
             $ipAddress,
             new UserAgent($userAgent)
@@ -72,14 +72,14 @@ class LoginProcessor implements ProcessorInterface
       return new JwtTokenOutput($token);
    }
 
-   private function getIdentifiant(string $identifiant): Email|Phone
+   private function getIdentifier(string $identifier): Email|Phone
    {
-      if (filter_var($identifiant, FILTER_VALIDATE_EMAIL)) {
-         return new Email($identifiant);
+      if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+         return new Email($identifier);
       }
 
       try {
-         return new Phone($identifiant);
+         return new Phone($identifier);
       } catch (\Throwable $th) {
          throw new UserCredentialsException();
       }

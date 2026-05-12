@@ -8,5 +8,15 @@ use App\SharedContext\Domain\ValueObject\Uuid;
 
 interface SessionRepository extends RepositoryInterface
 {
+   /**
+    * @param Uuid $userId
+    * @return Session|null
+    */
    public function findByUserId(Uuid $userId): ?Session;
+
+   /**
+    * @param Uuid $userId
+    * @return array<int, Session>
+    */
+   public function findAllByUserId(Uuid $userId): array;
 }

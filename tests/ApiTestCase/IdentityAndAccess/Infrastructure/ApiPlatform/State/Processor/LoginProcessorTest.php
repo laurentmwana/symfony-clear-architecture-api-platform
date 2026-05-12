@@ -25,7 +25,7 @@ class LoginProcessorTest extends AbstractApiTestCase
 
       $response = static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => $email,
+            'identifier' => $email,
             'password' => self::DEFAULT_PASSWORD,
          ],
          'headers' => $this->getHeadersContentJson(),
@@ -47,7 +47,7 @@ class LoginProcessorTest extends AbstractApiTestCase
 
       $response = static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => $phone,
+            'identifier' => $phone,
             'password' => self::DEFAULT_PASSWORD,
          ],
          'headers' => $this->getHeadersContentJson(),
@@ -69,7 +69,7 @@ class LoginProcessorTest extends AbstractApiTestCase
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => '243820110123',
+            'identifier' => '243820110123',
             'password' => self::DEFAULT_PASSWORD,
          ],
          'headers' => $this->getHeadersContentJson(),
@@ -87,7 +87,7 @@ class LoginProcessorTest extends AbstractApiTestCase
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => '0820110123',
+            'identifier' => '0820110123',
             'password' => self::DEFAULT_PASSWORD,
          ],
          'headers' => $this->getHeadersContentJson(),
@@ -105,7 +105,7 @@ class LoginProcessorTest extends AbstractApiTestCase
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => $email,
+            'identifier' => $email,
             'password' => 'wrongpassword',
          ],
          'headers' => $this->getHeadersContentJson(),
@@ -120,7 +120,7 @@ class LoginProcessorTest extends AbstractApiTestCase
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => '+243800110120',
+            'identifier' => '+243800110120',
             'password' => self::DEFAULT_PASSWORD,
          ],
          'headers' => $this->getHeadersContentJson(),
@@ -133,7 +133,7 @@ class LoginProcessorTest extends AbstractApiTestCase
    {
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => 'nonexistent@example.com',
+            'identifier' => 'nonexistent@example.com',
             'password' => self::DEFAULT_PASSWORD,
          ],
          'headers' => $this->getHeadersContentJson(),
@@ -146,7 +146,7 @@ class LoginProcessorTest extends AbstractApiTestCase
    {
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => '+243999999999',
+            'identifier' => '+243999999999',
             'password' => 'password123456',
          ],
          'headers' => $this->getHeadersContentJson(),
@@ -171,7 +171,7 @@ class LoginProcessorTest extends AbstractApiTestCase
    {
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => 'test@example.com',
+            'identifier' => 'test@example.com',
          ],
          'headers' => $this->getHeadersContentJson(),
       ]);
@@ -185,7 +185,7 @@ class LoginProcessorTest extends AbstractApiTestCase
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => '123',
+            'identifier' => '123',
             'password' => self::DEFAULT_PASSWORD,
          ],
          'headers' => $this->getHeadersContentJson(),
@@ -200,7 +200,7 @@ class LoginProcessorTest extends AbstractApiTestCase
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => 'invalid-email',
+            'identifier' => 'invalid-email',
             'password' => 'password123456',
          ],
          'headers' => $this->getHeadersContentJson(),
@@ -215,7 +215,7 @@ class LoginProcessorTest extends AbstractApiTestCase
 
       static::createClient()->request('POST', '/api/auth/login', [
          'json' => [
-            'identifiant' => '+123456789012',
+            'identifier' => '+123456789012',
             'password' => 'password123456',
          ],
          'headers' => $this->getHeadersContentJson(),

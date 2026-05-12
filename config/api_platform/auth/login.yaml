@@ -10,6 +10,7 @@ resources:
                 output: App\IdentityAndAccess\Presentation\Output\JwtTokenOutput
                 processor: App\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor\LoginProcessor
                 read: false
+                security: "is_granted('PUBLIC_ACCESS')"
                 status: 200
                 openapi:
                     summary: User authentication
@@ -20,15 +21,15 @@ resources:
                                 schema:
                                     type: object
                                     properties:
-                                        identifiant:
+                                        identifier:
                                             type: string
                                             description: Email address or phone number for DRC
-                                            example: "user@example.com"
+                                            example: "string"
                                         password:
                                             type: string
                                             format: password
-                                            example: "SecurePass123!"
-                                    required: [identifiant, password]
+                                            example: "string"
+                                    required: [identifier, password]
                     responses:
                         200:
                             description: Authentication successful
@@ -54,7 +55,7 @@ resources:
                                             errors:
                                                 type: object
                                                 properties:
-                                                    identifiant:
+                                                    identifier:
                                                         type: array
                                                         items:
                                                             type: string

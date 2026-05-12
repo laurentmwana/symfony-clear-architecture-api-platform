@@ -1,0 +1,19 @@
+resources:
+    App\IdentityAndAccess\Domain\Entity\Session:
+        operations:
+            ApiPlatform\Metadata\GetCollection:
+                shortName: IdentityAndAccess
+                name: auth_sessions_index
+                uriTemplate: /auth/sessions
+                output: App\IdentityAndAccess\Presentation\Output\SessionOutput
+                provider: App\IdentityAndAccess\Infrastructure\ApiPlatform\State\Provider\SessionsProvider
+                read: false
+                security: "is_granted('ROLE_USER')"
+                openapi:
+                    summary: Get user sessions
+                    description: Retrieve all active sessions for the authenticated user
+                    responses:
+                        200:
+                            description: List of sessions
+                        401:
+                            description: Unauthorized
