@@ -32,8 +32,7 @@ final class LoginCommand
       return $this->userAgent;
    }
 
-
-   public function getIdentifier()
+   public function getIdentifier(): Email|Phone
    {
       return $this->identifier;
    }

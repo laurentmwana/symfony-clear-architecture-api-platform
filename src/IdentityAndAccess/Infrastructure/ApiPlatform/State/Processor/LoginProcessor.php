@@ -9,7 +9,7 @@ use App\IdentityAndAccess\Domain\Exception\UserCredentialsException;
 use App\IdentityAndAccess\Domain\ValueObject\Password;
 use App\IdentityAndAccess\Presentation\Input\LoginInput;
 use App\IdentityAndAccess\Presentation\Output\JwtTokenOutput;
-use App\SharedContext\Application\Bus\BusDispatcher;
+use App\SharedContext\Application\Bus\Command\CommandBus;
 use App\SharedContext\Domain\Service\RateLimiter;
 use App\SharedContext\Domain\ValueObject\Email;
 use App\SharedContext\Domain\ValueObject\IpAddress;
@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 class LoginProcessor implements ProcessorInterface
 {
    public function __construct(
-      private BusDispatcher $bus,
+      private CommandBus $commandBus,
       private RateLimiter $rateLimiter
    ) {}
 
@@ -60,14 +60,14 @@ class LoginProcessor implements ProcessorInterface
       $ipAddress = new IpAddress($ip);
       $userAgent = $request->headers->get('User-Agent');
 
-      $token = $this->bus->dispatch(
-         new LoginCommand(
-            $identifier,
-            $password,
-            $ipAddress,
-            new UserAgent($userAgent)
-         )
+      $command = new LoginCommand(
+         $identifier,
+         $password,
+         $ipAddress,
+         new UserAgent($userAgent)
       );
+
+      $token = $this->commandBus->dispatch($command);
 
       return new JwtTokenOutput($token);
    }
