@@ -17,7 +17,7 @@ framework:
             event.bus: ~
 
         routing:
-            App\SharedContext\Application\Bus\Message\AsyncMessage: async
+            App\SharedContext\Application\Bus\Message\MessageHandler: async
             Symfony\Component\Mailer\Messenger\SendEmailMessage: async
 
 # when@test:

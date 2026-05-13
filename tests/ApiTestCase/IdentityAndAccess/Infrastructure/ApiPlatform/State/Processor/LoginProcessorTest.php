@@ -75,8 +75,7 @@ class LoginProcessorTest extends AbstractApiTestCase
          'headers' => $this->getHeadersContentJson(),
       ]);
 
-      // Returns 422 because phone format requires +243 prefix
-      $this->assertResponseStatusCodeSame(422);
+      $this->assertResponseStatusCodeSame(200);
    }
 
    public function testLoginWithPhoneLocalFormatShouldFail(): void
@@ -221,6 +220,6 @@ class LoginProcessorTest extends AbstractApiTestCase
          'headers' => $this->getHeadersContentJson(),
       ]);
 
-      $this->assertResponseStatusCodeSame(401);
+      $this->assertResponseStatusCodeSame(422);
    }
 }

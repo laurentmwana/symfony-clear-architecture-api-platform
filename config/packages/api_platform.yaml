@@ -27,3 +27,4 @@ api_platform:
     exception_to_status:
         App\IdentityAndAccess\Domain\Exception\AuthenticationException: 401
         App\IdentityAndAccess\Domain\Exception\UserNotFoundException: 404
+        App\SharedContext\Domain\Exception\ValueObjectInvalidException: 422
