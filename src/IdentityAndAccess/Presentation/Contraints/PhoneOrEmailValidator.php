@@ -23,6 +23,12 @@ class PhoneOrEmailValidator extends ConstraintValidator
 
       $cleanedPhone = (string) preg_replace('/[\s\-]/', '', $value);
 
+      if (!str_starts_with($cleanedPhone, '+')) {
+         if (preg_match('/^243[0-9]{9}$/', $cleanedPhone)) {
+            $cleanedPhone = '+' . $cleanedPhone;
+         }
+      }
+
       if (preg_match('/^\+\d{8,15}$/', $cleanedPhone)) {
          return;
       }
