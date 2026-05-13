@@ -2,7 +2,7 @@
 
 namespace App\IdentityAndAccess\Domain\Entity;
 
-use App\IdentityAndAccess\Domain\ValueObject\DeliveryMethod;
+use App\IdentityAndAccess\Domain\ValueObject\DeliveryChannel;
 use App\IdentityAndAccess\Domain\ValueObject\OtpCode;
 use App\IdentityAndAccess\Domain\ValueObject\OtpType;
 use App\SharedContext\Domain\ValueObject\Attempts;
@@ -28,7 +28,7 @@ class OneTimePassword
       Uuid $userId,
       OtpCode $code,
       OtpType $type,
-      DeliveryMethod $deliveryMethod,
+      DeliveryChannel $deliveryMethod,
       ?DateTimeImmutable $createdAt = null,
       ?DateTimeImmutable $updatedAt = null,
    ) {
@@ -50,7 +50,7 @@ class OneTimePassword
       Uuid $userId,
       OtpCode $code,
       OtpType $type,
-      DeliveryMethod $deliveryMethod,
+      DeliveryChannel $deliveryMethod,
    ): self {
       return new self(
          $id,
@@ -108,9 +108,9 @@ class OneTimePassword
       return new OtpType($this->type);
    }
 
-   public function getDeliveryMethod(): DeliveryMethod
+   public function getDeliveryMethod(): DeliveryChannel
    {
-      return DeliveryMethod::fromString($this->deliveryMethod);
+      return DeliveryChannel::fromString($this->deliveryMethod);
    }
 
    public function getAttempts(): Attempts

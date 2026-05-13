@@ -6,8 +6,6 @@ use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\IdentityAndAccess\Domain\Entity\OneTimePassword;
 use App\IdentityAndAccess\Domain\Entity\User;
-use App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\Orm\DoctrineOneTimePasswordRepository;
-use App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\Orm\DoctrineUserRepository;
 use App\IdentityAndAccess\Infrastructure\Persistence\Fixtures\UserFixtures;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheItemPoolInterface;
@@ -31,7 +29,6 @@ abstract class AbstractApiTestCase extends ApiTestCase
       $this->entityManager = $em;
    }
 
-   // CORRECTION : Utiliser l'entité, pas le repository
    protected function getUserByEmail(string $email): ?User
    {
       return $this->entityManager
@@ -39,7 +36,7 @@ abstract class AbstractApiTestCase extends ApiTestCase
          ->findOneBy(['email' => $email]);
    }
 
-   // CORRECTION : Utiliser l'entité, pas le repository
+
    protected function getOtpByUserId(string $userId): ?OneTimePassword
    {
       return $this->entityManager
@@ -114,10 +111,10 @@ abstract class AbstractApiTestCase extends ApiTestCase
          return $this->token;
       }
 
-      $response = static::createClient()->request('POST', '/login', [
+      $response = static::createClient()->request('POST', '/api/auth/login', [
          'json' => $body ?: [
             'username' => 'admin@example.com',
-            'password' => '$3cr3t',
+            'password' => 'password',
          ],
       ]);
 
@@ -139,9 +136,18 @@ abstract class AbstractApiTestCase extends ApiTestCase
       $cachePool->clear();
    }
 
-   public function createUser(?string $email = null, ?string $phone = null): User
-   {
-      $user = UserFixtures::createOne($email, $phone);
+   public function createUser(
+      ?string $email = null,
+      ?string $phone = null,
+      bool $emailUnverified = true,
+      bool $phoneUnverified = true
+   ): User {
+      $user = UserFixtures::createOne(
+         $email,
+         $phone,
+         $emailUnverified,
+         $phoneUnverified
+      );
 
       $this->save($user);
 

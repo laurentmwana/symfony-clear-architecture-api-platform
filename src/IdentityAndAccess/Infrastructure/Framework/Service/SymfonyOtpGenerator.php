@@ -6,7 +6,7 @@ use App\IdentityAndAccess\Domain\Entity\OneTimePassword;
 use App\IdentityAndAccess\Domain\Entity\User;
 use App\IdentityAndAccess\Domain\Repository\OneTimePasswordRepository;
 use App\IdentityAndAccess\Domain\Service\OtpGenerator;
-use App\IdentityAndAccess\Domain\ValueObject\DeliveryMethod;
+use App\IdentityAndAccess\Domain\ValueObject\DeliveryChannel;
 use App\IdentityAndAccess\Domain\ValueObject\OtpCode;
 use App\IdentityAndAccess\Domain\ValueObject\OtpType;
 use App\SharedContext\Domain\Service\UuidGenerator;
@@ -20,7 +20,7 @@ class SymfonyOtpGenerator implements OtpGenerator
       private UuidGenerator $uuidGenerator,
    ) {}
 
-   public function generate(User $user, OtpType $type, DeliveryMethod $method): OneTimePassword
+   public function generate(User $user, OtpType $type, DeliveryChannel $method): OneTimePassword
    {
       $userId = $user->getId();
 

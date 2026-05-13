@@ -20,6 +20,7 @@ final class User
    private string $roles;
    private DateTimeImmutable $createdAt;
    private ?DateTimeImmutable $updatedAt = null;
+   private ?DateTimeImmutable $phoneVerifiedAt = null;
    private ?DateTimeImmutable $emailVerifiedAt = null;
 
    public function __construct(
@@ -69,20 +70,37 @@ final class User
       $this->updatedAt = new DateTimeImmutable();
    }
 
-   public function isVerified(): bool
+   public function isEmailVerified(): bool
    {
       return $this->emailVerifiedAt !== null;
    }
 
-   public function markAsVerified(): void
+   public function isPhoneVerified(): bool
+   {
+      return $this->phoneVerifiedAt !== null;
+   }
+
+   public function markEmailAsUnverified(): void
    {
       $this->emailVerifiedAt = new DateTimeImmutable();
       $this->updatedAt = new DateTimeImmutable();
    }
 
-   public function markAsInVerified(): void
+   public function markPhoneAsUnverified(): void
+   {
+      $this->phoneVerifiedAt = new DateTimeImmutable();
+      $this->updatedAt = new DateTimeImmutable();
+   }
+
+   public function markEmailAsInVerified(): void
    {
       $this->emailVerifiedAt = null;
+      $this->updatedAt = new DateTimeImmutable();
+   }
+
+   public function markPhoneAsInVerified(): void
+   {
+      $this->phoneVerifiedAt = null;
       $this->updatedAt = new DateTimeImmutable();
    }
 

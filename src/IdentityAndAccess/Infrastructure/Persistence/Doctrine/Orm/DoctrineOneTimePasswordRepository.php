@@ -5,8 +5,6 @@ namespace App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\Orm;
 use App\IdentityAndAccess\Domain\Entity\OneTimePassword;
 use App\IdentityAndAccess\Domain\Repository\OneTimePasswordRepository;
 use App\IdentityAndAccess\Domain\ValueObject\OtpType;
-use App\SharedContext\Domain\Enums\DeliveryChannelEnum;
-use App\IdentityAndAccess\Domain\ValueObject\OtpCode;
 use App\SharedContext\Domain\ValueObject\Uuid;
 use App\SharedContext\Infrastructure\Persistence\Doctrine\Orm\DoctrineRepositoryTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

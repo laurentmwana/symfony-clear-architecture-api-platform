@@ -9,7 +9,7 @@ use App\SharedContext\Domain\ValueObject\Phone;
 
 final class EmailOrPhone
 {
-   private function __construct(private Email|Phone $value) {}
+   public function __construct(private Email|Phone $value) {}
 
    public static function fromString(string $input): self
    {

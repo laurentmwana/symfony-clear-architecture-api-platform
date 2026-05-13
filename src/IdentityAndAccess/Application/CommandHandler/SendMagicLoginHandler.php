@@ -8,7 +8,7 @@ use App\IdentityAndAccess\Application\Command\MagicLoginCommand;
 use App\IdentityAndAccess\Domain\Enums\OtpTypeEnum;
 use App\IdentityAndAccess\Domain\Repository\UserRepository;
 use App\IdentityAndAccess\Domain\Service\OtpGenerator;
-use App\IdentityAndAccess\Domain\ValueObject\DeliveryMethod;
+use App\IdentityAndAccess\Domain\ValueObject\DeliveryChannel;
 use App\IdentityAndAccess\Domain\ValueObject\OtpType;
 use App\SharedContext\Application\Bus\Command\CommandHandler;
 use App\SharedContext\Application\Bus\Message\MessageBus;
@@ -38,7 +38,7 @@ class SendMagicLoginHandler implements CommandHandler
       }
 
       $channel = $identifier->getDeliveryMethod();
-      $method = DeliveryMethod::fromEnum($channel);
+      $method = DeliveryChannel::fromEnum($channel);
 
       $otp = $this->otpGenerator->generate($user, $type, $method);
 
