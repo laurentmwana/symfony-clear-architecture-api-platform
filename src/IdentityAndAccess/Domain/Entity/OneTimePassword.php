@@ -2,12 +2,10 @@
 
 namespace App\IdentityAndAccess\Domain\Entity;
 
-use App\IdentityAndAccess\Domain\Enums\OtpStatusEnum;
-use App\IdentityAndAccess\Domain\ValueObject\OtpStatus;
+use App\IdentityAndAccess\Domain\ValueObject\DeliveryMethod;
 use App\IdentityAndAccess\Domain\ValueObject\OtpCode;
+use App\IdentityAndAccess\Domain\ValueObject\OtpType;
 use App\SharedContext\Domain\ValueObject\Attempts;
-use App\SharedContext\Domain\ValueObject\IpAddress;
-use App\SharedContext\Domain\ValueObject\UserAgent;
 use App\SharedContext\Domain\ValueObject\Uuid;
 use DateTimeImmutable;
 
@@ -16,41 +14,32 @@ class OneTimePassword
    private string $id;
    private string $userId;
    private string $code;
-   private string $status;
+   private string $type;
+   private string $deliveryMethod;
 
    private DateTimeImmutable $expiresAt;
    private DateTimeImmutable $createdAt;
    private DateTimeImmutable $updatedAt;
 
-   private ?DateTimeImmutable $usedAt = null;
-
    private int $attempts;
-
-   private ?string $ipAddress = null;
-   private ?string $userAgent = null;
 
    private function __construct(
       Uuid $id,
       Uuid $userId,
       OtpCode $code,
-      OtpStatus $status,
-      DateTimeImmutable $expiresAt,
-      Attempts $attempts,
-      ?IpAddress $ipAddress,
-      ?UserAgent $userAgent,
+      OtpType $type,
+      DeliveryMethod $deliveryMethod,
       ?DateTimeImmutable $createdAt = null,
       ?DateTimeImmutable $updatedAt = null,
    ) {
       $this->id = (string) $id;
       $this->userId = (string) $userId;
       $this->code = (string) $code;
-      $this->status = (string) $status;
+      $this->type = (string) $type;
+      $this->deliveryMethod = $deliveryMethod->value();
 
-      $this->expiresAt = $expiresAt;
-      $this->attempts = $attempts->value();
-
-      $this->ipAddress = $ipAddress?->value();
-      $this->userAgent = $userAgent?->value();
+      $this->expiresAt = new DateTimeImmutable(sprintf("+%d minutes", $type->getExpirationMinutes()));
+      $this->attempts = $type->getMaxAttempts();
 
       $this->createdAt = $createdAt ?? new DateTimeImmutable();
       $this->updatedAt = $updatedAt ?? new DateTimeImmutable();
@@ -60,38 +49,43 @@ class OneTimePassword
       Uuid $id,
       Uuid $userId,
       OtpCode $code,
-      ?IpAddress $ipAddress = null,
-      ?UserAgent $userAgent = null,
-      ?DateTimeImmutable $expiresAt = null,
+      OtpType $type,
+      DeliveryMethod $deliveryMethod,
    ): self {
       return new self(
          $id,
          $userId,
          $code,
-         new OtpStatus(OtpStatusEnum::PENDING),
-         $expiresAt ?? new DateTimeImmutable('+10 minutes'),
-         new Attempts(0),
-         $ipAddress,
-         $userAgent
+         $type,
+         $deliveryMethod,
       );
    }
 
    public function markAsUsed(): void
    {
-      $this->status = OtpStatusEnum::USED->value;
-      $this->usedAt = new DateTimeImmutable();
       $this->updatedAt = new DateTimeImmutable();
+      $this->expiresAt = new DateTimeImmutable();
    }
 
-   public function isUsed(): bool
+   public function markAsFailed(): void
    {
-      return $this->status === OtpStatusEnum::USED->value
-         && $this->usedAt !== null;
+      $this->attempts--;
+      $this->updatedAt = new DateTimeImmutable();
    }
 
    public function isExpired(): bool
    {
-      return $this->expiresAt < new DateTimeImmutable();
+      return $this->expiresAt < new DateTimeImmutable() || $this->attempts <= 0;
+   }
+
+   public function isPending(): bool
+   {
+      return !$this->isExpired();
+   }
+
+   public function hasRemainingAttempts(): bool
+   {
+      return $this->attempts > 0;
    }
 
    public function getId(): Uuid
@@ -109,9 +103,14 @@ class OneTimePassword
       return new OtpCode($this->code);
    }
 
-   public function getStatus(): OtpStatus
+   public function getType(): OtpType
    {
-      return new OtpStatus(OtpStatusEnum::from($this->status));
+      return new OtpType($this->type);
+   }
+
+   public function getDeliveryMethod(): DeliveryMethod
+   {
+      return DeliveryMethod::fromString($this->deliveryMethod);
    }
 
    public function getAttempts(): Attempts
@@ -119,14 +118,9 @@ class OneTimePassword
       return new Attempts($this->attempts);
    }
 
-   public function getIpAddress(): ?IpAddress
+   public function getRemainingAttempts(): int
    {
-      return $this->ipAddress ? new IpAddress($this->ipAddress) : null;
-   }
-
-   public function getUserAgent(): ?UserAgent
-   {
-      return $this->userAgent ? new UserAgent($this->userAgent) : null;
+      return $this->attempts;
    }
 
    public function getExpiresAt(): DateTimeImmutable
