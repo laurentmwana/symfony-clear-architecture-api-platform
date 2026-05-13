@@ -4,7 +4,7 @@ namespace App\IdentityAndAccess\Domain\ValueObject;
 
 use App\SharedContext\Domain\Enums\DeliveryChannelEnum;
 
-final class DeliveryMethod
+final class DeliveryChannel
 {
    private DeliveryChannelEnum $enum;
 
@@ -28,6 +28,11 @@ final class DeliveryMethod
    public static function email(): self
    {
       return new self(DeliveryChannelEnum::EMAIL->value);
+   }
+
+   public static function whatsapp(): self
+   {
+      return new self(DeliveryChannelEnum::WHATSAPP->value);
    }
 
    public static function fromString(string $value): self
