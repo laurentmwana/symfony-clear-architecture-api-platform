@@ -5,9 +5,9 @@ namespace App\IdentityAndAccess\Application\QueryHandler;
 use App\IdentityAndAccess\Application\Query\GetUserSessionsQuery;
 use App\IdentityAndAccess\Domain\Entity\Session;
 use App\IdentityAndAccess\Domain\Repository\SessionRepository;
-use App\SharedContext\Application\Bus\Query\QueryHandlerBus;
+use App\SharedContext\Application\Bus\Query\QueryHandler;
 
-class GetUserSessionsHandler implements QueryHandlerBus
+class GetUserSessionsHandler implements QueryHandler
 {
    public function __construct(
       private SessionRepository $session

@@ -4,8 +4,8 @@ namespace App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\Orm;
 
 use App\IdentityAndAccess\Domain\Entity\User;
 use App\IdentityAndAccess\Domain\Repository\UserRepository;
+use App\IdentityAndAccess\Domain\ValueObject\EmailOrPhone;
 use App\SharedContext\Domain\ValueObject\Email;
-use App\SharedContext\Domain\ValueObject\Phone;
 use App\SharedContext\Infrastructure\Persistence\Doctrine\Orm\DoctrineRepositoryTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -29,9 +29,9 @@ class DoctrineUserRepository extends ServiceEntityRepository implements UserRepo
       ]);
    }
 
-   public function findByEmailOrPhone(Email|Phone $identifiant): ?User
+   public function findByIdentifier(EmailOrPhone $identifier): ?User
    {
-      $value = $identifiant->value();
+      $value = $identifier->value();
 
       return $this->createQueryBuilder('u')
          ->where('u.email = :value OR u.phone = :value')

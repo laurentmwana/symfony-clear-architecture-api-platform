@@ -7,7 +7,7 @@
 
     <entity name="App\IdentityAndAccess\Domain\Entity\User"
             table="users"
-            repository-class="App\IdentityAndAccess\Domain\Repository\UserRepository">
+            repository-class="App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\Orm\DoctrineUserRepository">
 
         <!-- ID UUID en embedded -->
         <id name="id" column="id" type="string" />

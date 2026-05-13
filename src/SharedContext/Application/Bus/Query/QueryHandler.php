@@ -2,4 +2,4 @@
 
 namespace App\SharedContext\Application\Bus\Query;
 
-interface QueryHandlerBus {}
+interface QueryHandler {}

@@ -21,6 +21,10 @@ final class Phone implements Stringable
          );
       }
 
+      if (!str_starts_with($cleaned, '+')) {
+         $cleaned = '+' . $cleaned;
+      }
+
       if (!preg_match('/^\+243[0-9]{9}$/', $cleaned)) {
          throw new ValueObjectInvalidException(
             sprintf(

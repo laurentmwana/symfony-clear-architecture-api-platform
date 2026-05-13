@@ -8,10 +8,10 @@ use App\IdentityAndAccess\Domain\Exception\UserCredentialsException;
 use App\IdentityAndAccess\Domain\Repository\UserRepository;
 use App\IdentityAndAccess\Domain\Service\JwtTokenGenerator;
 use App\IdentityAndAccess\Domain\Service\PasswordHasher;
-use App\SharedContext\Application\Bus\Command\CommandHandlerBus;
+use App\SharedContext\Application\Bus\Command\CommandHandler;
 use App\SharedContext\Application\Bus\Event\EventBus;
 
-final class LoginHandler implements CommandHandlerBus
+final class LoginHandler implements CommandHandler
 {
    public function __construct(
       private UserRepository $repository,
@@ -22,7 +22,7 @@ final class LoginHandler implements CommandHandlerBus
 
    public function __invoke(LoginCommand $command): string
    {
-      $user = $this->repository->findByEmailOrPhone($command->getIdentifier());
+      $user = $this->repository->findByIdentifier($command->getIdentifier());
 
       if (!$user || !$this->isMatch($user->getPassword(), $command->getPassword())) {
          throw new UserCredentialsException();

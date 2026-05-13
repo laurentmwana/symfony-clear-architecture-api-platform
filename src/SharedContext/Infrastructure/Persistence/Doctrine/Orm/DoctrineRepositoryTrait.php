@@ -2,10 +2,8 @@
 
 namespace App\SharedContext\Infrastructure\Persistence\Doctrine\Orm;
 
-
 trait DoctrineRepositoryTrait
 {
-
    public function save(object $entity): void
    {
       $this->getEntityManager()->persist($entity);

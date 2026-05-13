@@ -24,9 +24,9 @@ final class Attempts implements Stringable
       }
    }
 
-   public function increment(): self
+   public function minus(): self
    {
-      return new self($this->value + 1, $this->max);
+      return new self($this->value - 1, $this->max);
    }
 
    public function value(): int

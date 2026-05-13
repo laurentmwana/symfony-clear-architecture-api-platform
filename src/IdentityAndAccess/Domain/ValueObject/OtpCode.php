@@ -29,6 +29,11 @@ final class OtpCode implements Stringable
       return $this->value;
    }
 
+   public function equals(self $other): bool
+   {
+      return $other->value() === $this->value();
+   }
+
    public function __toString(): string
    {
       return $this->value;

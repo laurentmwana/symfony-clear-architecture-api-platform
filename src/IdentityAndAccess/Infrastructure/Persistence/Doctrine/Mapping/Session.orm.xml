@@ -7,7 +7,7 @@
 
     <entity name="App\IdentityAndAccess\Domain\Entity\Session"
             table="sessions"
-            repository-class="App\IdentityAndAccess\Domain\Repository\SessionRepository">
+            repository-class="App\IdentityAndAccess\Infrastructure\Persistence\Doctrine\Orm\DoctrineSessionRepository">
 
         <!-- ID UUID -->
         <id name="id" column="id" type="string"/>

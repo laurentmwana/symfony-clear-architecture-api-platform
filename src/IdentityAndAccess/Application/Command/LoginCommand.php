@@ -2,16 +2,15 @@
 
 namespace App\IdentityAndAccess\Application\Command;
 
-use App\SharedContext\Domain\ValueObject\Email;
+use App\IdentityAndAccess\Domain\ValueObject\EmailOrPhone;
 use App\IdentityAndAccess\Domain\ValueObject\Password;
 use App\SharedContext\Domain\ValueObject\IpAddress;
-use App\SharedContext\Domain\ValueObject\Phone;
 use App\SharedContext\Domain\ValueObject\UserAgent;
 
 final class LoginCommand
 {
    public function __construct(
-      private Email|Phone $identifier,
+      private EmailOrPhone $identifier,
       private Password $password,
       private ?IpAddress $ipAddress = null,
       private ?UserAgent $userAgent = null
@@ -32,7 +31,7 @@ final class LoginCommand
       return $this->userAgent;
    }
 
-   public function getIdentifier(): Email|Phone
+   public function getIdentifier(): EmailOrPhone
    {
       return $this->identifier;
    }

@@ -2,4 +2,4 @@
 
 namespace App\SharedContext\Application\Bus\Command;
 
-interface CommandHandlerBus {}
+interface CommandHandler {}
