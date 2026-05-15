@@ -10,7 +10,7 @@ use ApiPlatform\OpenApi\Model\RequestBody;
 use ApiPlatform\OpenApi\Model\Response;
 use App\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor\MagicLoginProcessor;
 use App\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor\VerifyMagicLoginProcessor;
-use App\IdentityAndAccess\Presentation\Input\MagicLoginInput;
+use App\IdentityAndAccess\Presentation\Input\IdentifierInput;
 use App\IdentityAndAccess\Presentation\Input\VerifyOtpInput;
 use App\IdentityAndAccess\Presentation\Output\JwtTokenOutput;
 use App\IdentityAndAccess\Presentation\Output\SendOtpCodeOutput;
@@ -23,7 +23,7 @@ use ArrayObject;
       new Post(
          uriTemplate: '/auth/magic-login',
          name: 'auth_magic_login_send',
-         input: MagicLoginInput::class,
+         input: IdentifierInput::class,
          output: SendOtpCodeOutput::class,
          processor: MagicLoginProcessor::class,
          read: false,
