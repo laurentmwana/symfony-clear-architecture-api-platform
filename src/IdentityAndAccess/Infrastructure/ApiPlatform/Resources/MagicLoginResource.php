@@ -13,7 +13,7 @@ use App\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor\VerifyMagic
 use App\IdentityAndAccess\Presentation\Input\MagicLoginInput;
 use App\IdentityAndAccess\Presentation\Input\VerifyOtpInput;
 use App\IdentityAndAccess\Presentation\Output\JwtTokenOutput;
-use App\IdentityAndAccess\Presentation\Output\OtpCodeOutput;
+use App\IdentityAndAccess\Presentation\Output\SendOtpCodeOutput;
 use ArrayObject;
 
 #[ApiResource(
@@ -24,7 +24,7 @@ use ArrayObject;
          uriTemplate: '/auth/magic-login',
          name: 'auth_magic_login_send',
          input: MagicLoginInput::class,
-         output: OtpCodeOutput::class,
+         output: SendOtpCodeOutput::class,
          processor: MagicLoginProcessor::class,
          read: false,
          security: "is_granted('PUBLIC_ACCESS')",

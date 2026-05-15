@@ -4,7 +4,7 @@ namespace App\IdentityAndAccess\Presentation\Output;
 
 use App\IdentityAndAccess\Domain\Enums\OtpTypeEnum;
 
-class OtpCodeOutput
+class SendOtpCodeOutput
 {
    /**
     * @param OtpTypeEnum $type

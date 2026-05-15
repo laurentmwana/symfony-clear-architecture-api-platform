@@ -7,7 +7,7 @@ use ApiPlatform\State\ProcessorInterface;
 use App\IdentityAndAccess\Application\Command\MagicLoginCommand;
 use App\IdentityAndAccess\Domain\ValueObject\EmailOrPhone;
 use App\IdentityAndAccess\Presentation\Input\MagicLoginInput;
-use App\IdentityAndAccess\Presentation\Output\OtpCodeOutput;
+use App\IdentityAndAccess\Presentation\Output\SendOtpCodeOutput;
 use App\IdentityAndAccess\Domain\Enums\OtpTypeEnum;
 use App\SharedContext\Application\Bus\Command\CommandBus;
 use App\SharedContext\Domain\Service\RateLimiter;
@@ -48,6 +48,6 @@ class MagicLoginProcessor implements ProcessorInterface
 
       $type = $this->commandBus->dispatch($command);
 
-      return OtpCodeOutput::toArray($type);
+      return SendOtpCodeOutput::toArray($type);
    }
 }

@@ -7,7 +7,7 @@ use ApiPlatform\State\ProcessorInterface;
 use App\IdentityAndAccess\Application\Command\SendVerificationPhoneCommand;
 use App\IdentityAndAccess\Domain\Enums\OtpTypeEnum;
 use App\IdentityAndAccess\Infrastructure\Framework\Security\SecurityUser;
-use App\IdentityAndAccess\Presentation\Output\OtpCodeOutput;
+use App\IdentityAndAccess\Presentation\Output\SendOtpCodeOutput;
 use App\SharedContext\Application\Bus\Command\CommandBus;
 use App\SharedContext\Domain\Service\RateLimiter;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -47,7 +47,7 @@ class SendVerificationPhoneProcessor implements ProcessorInterface
          throw new \RuntimeException('Missing authenticated user.');
       }
 
-      $user = $securityUser->toDomainUser();
+      $user = $securityUser->getUser();
 
       $command = new SendVerificationPhoneCommand($user);
 
@@ -55,6 +55,6 @@ class SendVerificationPhoneProcessor implements ProcessorInterface
 
       $type = $this->commandBus->dispatch($command);
 
-      return OtpCodeOutput::toArray($type);
+      return SendOtpCodeOutput::toArray($type);
    }
 }

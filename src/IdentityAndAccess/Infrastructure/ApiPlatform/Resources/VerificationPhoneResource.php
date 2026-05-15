@@ -9,17 +9,19 @@ use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
 use ApiPlatform\OpenApi\Model\RequestBody;
 use ApiPlatform\OpenApi\Model\Response;
 use App\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor\SendVerificationPhoneProcessor;
-use App\IdentityAndAccess\Presentation\Output\OtpCodeOutput;
+use App\IdentityAndAccess\Infrastructure\ApiPlatform\State\Processor\VerifyPhoneProcessor;
+use App\IdentityAndAccess\Presentation\Input\VerifyEmailOrPhoneInput;
+use App\IdentityAndAccess\Presentation\Output\SendOtpCodeOutput;
 use ArrayObject;
 
 #[ApiResource(
-   shortName: 'VerificationPhone',
+   shortName: 'IdentityAndAccess',
    description: 'Phone verification management',
    operations: [
       new Post(
          uriTemplate: '/auth/phone/send-verification',
          name: 'auth_phone_send_verification',
-         output: OtpCodeOutput::class,
+         output: SendOtpCodeOutput::class,
          processor: SendVerificationPhoneProcessor::class,
          read: false,
          security: "is_granted('ROLE_USER')",
@@ -65,6 +67,50 @@ use ArrayObject;
                '422' => new Response(
                   description: 'Phone already verified'
                ),
+            ]
+         ),
+      ),
+      new Post(
+         uriTemplate: '/auth/phone/verify',
+         name: 'auth_phone_verify',
+         input: VerifyEmailOrPhoneInput::class,
+         output: SendOtpCodeOutput::class,
+         processor: VerifyPhoneProcessor::class,
+         read: false,
+         security: "is_granted('ROLE_USER')",
+         status: 200,
+         openapi: new OpenApiOperation(
+            summary: 'Verify phone with OTP code',
+            description: 'Verify the user phone using the OTP code sent previously',
+            requestBody: new RequestBody(
+               content: new ArrayObject([
+                  'application/json' => new MediaType(
+                     new ArrayObject([
+                        'type' => 'object',
+                        'properties' => [
+                           'otp_code' => ['type' => 'string']
+                        ],
+                        'required' => ['otp_code']
+                     ])
+                  )
+               ])
+            ),
+            responses: [
+               '200' => new Response(
+                  description: 'Phone verified successfully',
+                  content: new ArrayObject([
+                     'application/json' => new MediaType(
+                        new ArrayObject([
+                           'type' => 'object',
+                           'properties' => [
+                              'message' => ['type' => 'string']
+                           ]
+                        ])
+                     )
+                  ])
+               ),
+               '401' => new Response(description: 'Invalid or expired code'),
+               '422' => new Response(description: 'Phone already verified')
             ]
          ),
       ),
