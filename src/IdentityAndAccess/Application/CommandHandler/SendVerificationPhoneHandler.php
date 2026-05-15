@@ -11,7 +11,7 @@ use App\SharedContext\Application\Bus\Command\CommandHandler;
 use App\SharedContext\Domain\Enums\MessageSubjectEnum;
 use App\SharedContext\Domain\Enums\MessageTemplateEnum;
 
-final class SendVerificationPhoneHandler extends AbstractVerificationHandler implements CommandHandler
+final class SendVerificationPhoneHandler extends AbstractSendOtpSender implements CommandHandler
 {
    public function __invoke(SendVerificationPhoneCommand $command): OtpTypeEnum
    {

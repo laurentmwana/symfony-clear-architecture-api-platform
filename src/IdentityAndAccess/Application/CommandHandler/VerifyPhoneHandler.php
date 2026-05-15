@@ -8,7 +8,7 @@ use App\IdentityAndAccess\Domain\Enums\OtpTypeEnum;
 use App\IdentityAndAccess\Domain\ValueObject\OtpType;
 use App\SharedContext\Application\Bus\Command\CommandHandler;
 
-final class VerifyPhoneHandler extends AbstractVerifyHandler implements CommandHandler
+final class VerifyPhoneHandler extends AbstractOtpVerifier implements CommandHandler
 {
    public function __invoke(
       VerifyPhoneCommand $command,

@@ -7,7 +7,7 @@ use App\IdentityAndAccess\Domain\Entity\User;
 use App\IdentityAndAccess\Domain\ValueObject\OtpType;
 use App\SharedContext\Application\Bus\Command\CommandHandler;
 
-final class VerifyEmailHandler extends AbstractVerifyHandler implements CommandHandler
+final class VerifyEmailHandler extends AbstractOtpVerifier implements CommandHandler
 {
    public function __invoke(
       VerifyEmailCommand $command,
