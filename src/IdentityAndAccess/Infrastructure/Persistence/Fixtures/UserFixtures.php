@@ -71,8 +71,8 @@ class UserFixtures extends Fixture
    public static function createOne(
       ?string $email = null,
       ?string $phone = null,
-      bool $emailUnverified = false,
-      bool $phoneUnverified = false
+      bool $emailUnverified = true,
+      bool $phoneUnverified = true
    ): User {
       $faker = Factory::create();
 
@@ -90,13 +90,14 @@ class UserFixtures extends Fixture
          $password
       );
 
-      if ($emailUnverified) {
-         $user->markEmailAsUnverified();
-      }
+      $emailUnverified
+         ? $user->markEmailAsUnVerified()
+         : $user->markEmailAsVerified();
 
-      if ($phoneUnverified) {
-         $user->markPhoneAsUnverified();
-      }
+
+      $phoneUnverified
+         ? $user->markPhoneAsUnVerified()
+         : $user->markPhoneAsVerified();
 
       return $user;
    }

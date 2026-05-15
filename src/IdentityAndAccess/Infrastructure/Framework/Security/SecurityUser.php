@@ -3,12 +3,6 @@
 namespace App\IdentityAndAccess\Infrastructure\Framework\Security;
 
 use App\IdentityAndAccess\Domain\Entity\User;
-use App\IdentityAndAccess\Domain\ValueObject\Password;
-use App\IdentityAndAccess\Domain\ValueObject\Roles;
-use App\SharedContext\Domain\ValueObject\Email;
-use App\SharedContext\Domain\ValueObject\Name;
-use App\SharedContext\Domain\ValueObject\Phone;
-use App\SharedContext\Domain\ValueObject\Uuid;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -16,42 +10,21 @@ final readonly class SecurityUser implements
    UserInterface,
    PasswordAuthenticatedUserInterface
 {
-   private function __construct(
-      private Uuid $id,
-      private Name $name,
-      private Email $email,
-      private Phone $phone,
-      private Password $password,
-      private Roles $roles
-   ) {}
+   private function __construct(private User $user) {}
 
    public static function create(User $user): self
    {
-      return new self(
-         $user->getId(),
-         $user->getName(),
-         $user->getEmail(),
-         $user->getPhone(),
-         $user->getPassword(),
-         $user->getRoles()
-      );
+      return new self($user);
    }
 
-   public function toDomainUser(): User
+   public function getUser(): User
    {
-      return User::create(
-         $this->id,
-         $this->name,
-         $this->email,
-         $this->phone,
-         $this->password,
-         $this->roles,
-      );
+      return $this->user;
    }
 
    public function getPassword(): string
    {
-      return $this->password->value();
+      return $this->user->getPassword()->value();
    }
 
    /**
@@ -59,17 +32,17 @@ final readonly class SecurityUser implements
     */
    public function getRoles(): array
    {
-      return $this->roles->toArray();
+      return $this->user->getRoles()->toArray();
    }
 
    #[\Override]
    public function getUserIdentifier(): string
    {
-      return $this->email->value();
+      return $this->user->getEmail()->value();
    }
 
    public function getId(): string
    {
-      return $this->id->value();
+      return $this->user->getId()->value();
    }
 }

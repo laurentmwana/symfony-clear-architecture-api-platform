@@ -6,6 +6,9 @@ use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\IdentityAndAccess\Domain\Entity\OneTimePassword;
 use App\IdentityAndAccess\Domain\Entity\User;
+use App\IdentityAndAccess\Domain\ValueObject\DeliveryChannel;
+use App\IdentityAndAccess\Domain\ValueObject\OtpType;
+use App\IdentityAndAccess\Infrastructure\Persistence\Fixtures\OtpFixtures;
 use App\IdentityAndAccess\Infrastructure\Persistence\Fixtures\UserFixtures;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Cache\CacheItemPoolInterface;
@@ -36,7 +39,6 @@ abstract class AbstractApiTestCase extends ApiTestCase
          ->findOneBy(['email' => $email]);
    }
 
-
    protected function getOtpByUserId(string $userId): ?OneTimePassword
    {
       return $this->entityManager
@@ -44,24 +46,47 @@ abstract class AbstractApiTestCase extends ApiTestCase
          ->findOneBy(['userId' => $userId]);
    }
 
-   protected function expireOtp(string $otpId): void
-   {
-      $otp = $this->entityManager->find(OneTimePassword::class, $otpId);
-      if ($otp) {
-         $otp->markAsUsed();
-         $this->entityManager->flush();
-      }
-   }
-
    protected function getOtpCodeForUser(string $email): ?string
    {
       $user = $this->getUserByEmail($email);
+
       if (!$user) {
          return null;
       }
 
       $otp = $this->getOtpByUserId($user->getId());
+
       return $otp ? $otp->getCode()->value() : null;
+   }
+
+   protected function createOtp(
+      User $user,
+      OtpType $type,
+      DeliveryChannel $deliveryChannel,
+      ?string $code = null,
+   ): OneTimePassword {
+      $otp = OtpFixtures::createAndPersist(
+         $this->getManager(),
+         $user,
+         $type,
+         $deliveryChannel,
+         $code,
+      );
+
+      $this->getManager()->flush();
+
+      return $otp;
+   }
+
+   protected function expireOtp(string $otpId): void
+   {
+      $otp = $this->entityManager->find(OneTimePassword::class, $otpId);
+
+      if ($otp) {
+         $otp->markAsUsed();
+
+         $this->entityManager->flush();
+      }
    }
 
    public function getManager(): EntityManagerInterface

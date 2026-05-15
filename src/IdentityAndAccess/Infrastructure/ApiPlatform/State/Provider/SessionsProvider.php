@@ -34,7 +34,7 @@ final class SessionsProvider implements ProviderInterface
          throw new \RuntimeException('Missing authenticated user.');
       }
 
-      $user = $securityUser->toDomainUser();
+      $user = $securityUser->getUser();
 
       $sessions = $this->queryBus->dispatch(
          new GetUserSessionsQuery($user->getId())

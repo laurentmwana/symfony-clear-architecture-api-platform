@@ -80,25 +80,25 @@ final class User
       return $this->phoneVerifiedAt !== null;
    }
 
-   public function markEmailAsUnverified(): void
+   public function markEmailAsVerified(): void
    {
       $this->emailVerifiedAt = new DateTimeImmutable();
       $this->updatedAt = new DateTimeImmutable();
    }
 
-   public function markPhoneAsUnverified(): void
+   public function markPhoneAsVerified(): void
    {
       $this->phoneVerifiedAt = new DateTimeImmutable();
       $this->updatedAt = new DateTimeImmutable();
    }
 
-   public function markEmailAsInVerified(): void
+   public function markEmailAsUnVerified(): void
    {
       $this->emailVerifiedAt = null;
       $this->updatedAt = new DateTimeImmutable();
    }
 
-   public function markPhoneAsInVerified(): void
+   public function markPhoneAsUnVerified(): void
    {
       $this->phoneVerifiedAt = null;
       $this->updatedAt = new DateTimeImmutable();
