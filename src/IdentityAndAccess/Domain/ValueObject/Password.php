@@ -15,6 +15,20 @@ final class Password implements Stringable
       $this->value = $hashedPassword;
    }
 
+   public function changeValue(string $hasher): self
+   {
+      $hasher = trim($hasher);
+
+      if ($hasher === '') {
+         throw new ValueObjectInvalidException('Password cannot be empty.');
+      }
+
+      $this->value = $hasher;
+
+      return $this;
+   }
+
+
    public static function fromPlainUnhashed(string $plainPassword): self
    {
       $plainPassword = trim($plainPassword);
